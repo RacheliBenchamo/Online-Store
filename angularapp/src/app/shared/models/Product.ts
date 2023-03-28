@@ -1,0 +1,22 @@
+/**
+ * Represents a product in the online store.
+ */
+export class Product {
+  // The unique identifier for the product. 
+  id!: number;
+
+  // The name of the product.
+  name!: string;
+
+  // The price of the product. 
+  price!: number;
+
+  // The tags associated with the product (optional). 
+  tags?: string[];
+
+  // Whether or not the product is a favorite.
+  favorite: boolean = false;
+
+  // The URL for the product's image.
+  imgUrl!: string;
+}

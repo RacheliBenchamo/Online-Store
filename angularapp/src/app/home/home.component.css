@@ -1,0 +1,57 @@
+ul{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+}
+
+li a{
+    height: 30rem;
+    width: 20rem;
+    border: 1px solid whitesmoke;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #e72929;
+}
+
+li a:hover{
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+.content{
+    padding: .5rem 1rem;
+    position: relative;
+}
+
+.favorite{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font: 1.2rem;
+}
+
+.favorite.not{
+    color: dimgrey;
+}
+
+.price{
+    color: #414141;
+    margin-top: 0.7rem;
+}
+
+.sort-and-search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.sort-and-search-container > * {
+  margin: 0 3rem;
+}
