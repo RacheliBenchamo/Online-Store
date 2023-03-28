@@ -5,14 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { HomeComponent } from './home/home.component';
-import { SearchComponent } from './search/search.component';
-import { TagsComponent } from './tags/tags.component';
-import { ProductPageComponent } from './product-page/product-page.component';
-import { CartPageComponent } from './cart-page/cart-page.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { FilterProductsComponent } from './filter-products/filter-products.component';
+import { HeaderComponent } from './components/header/header.component';
+import { HomeComponent } from './components/home/home.component';
+import { SearchComponent } from './components/search/search.component';
+import { TagsComponent } from './components/tags/tags.component';
+import { ProductPageComponent } from './components/product-page/product-page.component';
+import { CartPageComponent } from './components/cart-page/cart-page.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { FilterProductsComponent } from './components/filter-products/filter-products.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
