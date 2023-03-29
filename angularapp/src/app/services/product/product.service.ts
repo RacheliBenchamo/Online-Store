@@ -1,12 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Tag } from '../../shared/models/Tag';
 import { Product } from '../../shared/models/Product'
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+import { environment } from '../../../../environment/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
+  products: Product[]=[];
+  test: string="";
   // Define the list of products
   productsList: Product[] = [
     {
@@ -17,73 +23,17 @@ export class ProductService {
       favorite: false,
       imgUrl: "/assets/Images/Artichoke.jpg",
     },
-    {
-      id: 2,
-      name: 'Broccoli',
-      price: 2,
-      tags: ['green', 'healthy'],
-      favorite: false,
-      imgUrl: "/assets/Images/Broccoli.jpg",
-    },
-    {
-      id: 3,
-      name: 'Cabbage',
-      price: 2,
-      tags: ['white', 'healthy'],
-      favorite: true,
-      imgUrl: "/assets/Images/Cabbage.jpg",
-    },
-    {
-      id: 4,
-      name: 'Carrot',
-      price: 2.5,
-      tags: ['orange', 'healthy', 'good'],
-      favorite: false,
-      imgUrl: "/assets/Images/Carrot.jpg",
-    },
-    {
-      id: 5,
-      name: 'Eggplant',
-      price: 2.5,
-      tags: ['purple', 'healthy', 'good'],
-      favorite: true,
-      imgUrl: "/assets/Images/Eggplant.jpg",
-    },
-    {
-      id: 6,
-      name: 'Garlic',
-      price: 1.5,
-      tags: ['purple', 'healthy'],
-      favorite: true,
-      imgUrl: "/assets/Images/Garlic.jpg",
-    },
-    {
-      id: 7,
-      name: 'Lettuce',
-      price: 3.5,
-      tags: ['green', 'healthy'],
-      favorite: true,
-      imgUrl: "/assets/Images/Lettuce.jpg",
-    },
-    {
-      id: 8,
-      name: 'Pepper',
-      price: 3.5,
-      tags: ['good', 'healthy'],
-      favorite: true,
-      imgUrl: "/assets/Images/Pepper.jpg",
-    },
-    {
-      id: 9,
-      name: 'Tomato',
-      price: 3.5,
-      tags: ['good', 'red', 'healthy'],
-      favorite: true,
-      imgUrl: "/assets/Images/Tomato.jpg",
-    },
+    
   ]
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+    http.get<Product[]>('/products').subscribe(result => {
+      this.products = result;
+    }, error => console.error(error));
+    console.log(this.products);
+   
+  }
+
 
   /**
    * Returns a Product with the given ID.
@@ -92,7 +42,7 @@ export class ProductService {
    */
   public getProductById(id: number): Product {
     try {
-      return this.getAll().find(product => product.id == id)!;
+      return this.getProductList().find(product => product.id == id)!;
     } catch (error) {
       console.error(`Error getting product by ID: ${error}`);
       throw error;
@@ -103,13 +53,13 @@ export class ProductService {
    * Returns an array of all Products.
    * @returns An array of all Products.
    */
-  public getAll(): Product[] {
-    try {
-      return this.productsList;
-    } catch (error) {
-      console.error(`Error getting all products: ${error}`);
-      throw error;
-    }
+  public getAll(): Observable<Product[]> {
+    return this.http.get<Product[]>('/products');
+  }
+
+  public getProductList(): Product[] {
+    this.getAll().subscribe(result => ( this.products = result ));
+      return this.products;
   }
 
   /**
@@ -172,7 +122,7 @@ export class ProductService {
   */
   public getAllProductsBySearchTerm(searchTerm: string): Product[] {
     try {
-      return this.getAll().filter(product =>
+      return this.getProductList().filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()));
     } catch (error) {
       console.error(`Error getting products by search term: ${error}`);

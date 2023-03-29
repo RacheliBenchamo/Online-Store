@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
       } else if (params && params['tag']) {
         this.products = this.productService.getProductByTag(params['tag']);
       } else {
-        this.products = this.productService.getAll();
+        this.productService.getAll().subscribe(result => (this.products = result));
       }
     });
   }
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   sortProducts(selectedOption: string) {
     try {
       this.productService.sortedProductsBy(selectedOption);
-      this.products = this.productService.getAll();
+      this.productService.getAll().subscribe(result => (this.products = result));
     } catch (error) {
       console.log('Error occurred during sorting: ', error);
     }
