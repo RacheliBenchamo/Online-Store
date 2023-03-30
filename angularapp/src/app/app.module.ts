@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { SearchComponent } from './components/search/search.component';
-import { TagsComponent } from './components/tags/tags.component';
 import { ProductPageComponent } from './components/product-page/product-page.component';
 import { CartPageComponent } from './components/cart-page/cart-page.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
@@ -28,7 +27,6 @@ const routes: Routes = [
     HeaderComponent,
     HomeComponent,
     SearchComponent,
-    TagsComponent,
     ProductPageComponent,
     CartPageComponent,
     NotFoundComponent,

@@ -4,13 +4,10 @@
 </app-not-found>
 
 <div *ngIf="products">
-
   <div class="sort-and-search-container">
     <app-search></app-search>
     <app-filter-products (sortOption)="sortProducts($event)"></app-filter-products>
   </div>
-  <app-tags></app-tags>
-
   <ul>
     <li *ngFor="let product of products">
       <a routerLink="/product/{{product.id}}">

@@ -25,8 +25,6 @@ export class HomeComponent implements OnInit {
     ).subscribe(params => {
       if (params && params['searchTerm']) {
         this.products = this.productService.getAllProductsBySearchTerm(params['searchTerm']);
-      } else if (params && params['tag']) {
-        this.products = this.productService.getProductByTag(params['tag']);
       } else {
         this.productService.getAll().subscribe(result => (this.products = result));
       }

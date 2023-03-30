@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using webapi.Data;
 using webapi.Models;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -11,12 +13,11 @@ namespace YourNamespace.API
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
+        private readonly DataContext _context;
 
-        private readonly ILogger<ProductsController> _logger;
-
-        public ProductsController(ILogger<ProductsController> logger)
+        public ProductsController(DataContext context)
         {
-            _logger = logger;
+            this._context = context;
         }
 
         // public ProductsController() { }
@@ -25,31 +26,59 @@ namespace YourNamespace.API
 
         // GET products
         [HttpGet(Name = "GetAllProducts")]
-        public Product[] Get()
+        public async Task<ActionResult<List<Product>>> Get()
         {
-            return new Product[]{
-        new Product
-        {
-            Id = 1,
-            Name = "Broccoli",
-            Price = 2,
-            Tags =  new string[] { "green", "good" },
-            Favorite = true,
-            ImgUrl = ""
-        },
-        new Product 
-        {
-            Id = 2,
-            Name = "Carrot",
-            Price = 1,
-            Tags = new string[] { "crunchy", "orange" },
-            Favorite = false,
-            ImgUrl = "../../../assets/Images/Broccoli.jpg"
-        },
-                // Add more products here as needed
-        };
-
+            return Ok(await _context.Products.ToListAsync());
         }
 
+        [HttpGet("{id}", Name = "GetProductById")]
+        public async Task<ActionResult<Product>> Get(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return NotFound();
+
+            return Ok(product);
+        }
+
+
+        [HttpPost(Name = "CreateNewProduct")]
+        public async Task<ActionResult<List<Product>>> AddNewProduct(Product product)
+        {
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Products.ToListAsync());
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<List<Product>>> UpdateProduct(Product product)
+        {
+            var dbProduct = await _context.Products.FindAsync(product.Id);
+            if(dbProduct == null)
+                return BadRequest("Product Not Found.");
+
+            dbProduct.Name = product.Name;
+            dbProduct.ImgUrl = product.ImgUrl;
+            dbProduct.Price = product.Price;
+            dbProduct.Favorite = product.Favorite;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Products.ToListAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<List<Product>>> DeleteProduct(int id)
+        {
+            var dbProduct = await _context.Products.FindAsync(id);
+            if (dbProduct == null)
+                return BadRequest("Product Not Found.");
+
+            _context.Products.Remove(dbProduct);
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Products.ToListAsync());
+        }
     }
 }

@@ -11,9 +11,6 @@ export class Product {
   // The price of the product. 
   price!: number;
 
-  // The tags associated with the product (optional). 
-  tags?: string[];
-
   // Whether or not the product is a favorite.
   favorite: boolean = false;
 

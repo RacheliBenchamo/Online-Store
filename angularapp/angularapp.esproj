@@ -12,6 +12,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="environment\" />
-    <Folder Include="src\assets\Images\" />
   </ItemGroup>
 </Project>
