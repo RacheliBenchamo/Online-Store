@@ -12,6 +12,7 @@ import { ProductPageComponent } from './components/product-page/product-page.com
 import { CartPageComponent } from './components/cart-page/cart-page.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { FilterProductsComponent } from './components/filter-products/filter-products.component';
+import { ManageStoreComponent } from './components/manage-store/manage-store.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -30,7 +31,8 @@ const routes: Routes = [
     ProductPageComponent,
     CartPageComponent,
     NotFoundComponent,
-    FilterProductsComponent
+    FilterProductsComponent,
+    ManageStoreComponent
   ],
   imports: [
     BrowserModule,
