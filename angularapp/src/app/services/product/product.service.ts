@@ -11,29 +11,23 @@ import { environment } from '../../../../environment/environment';
 })
 export class ProductService {
 
-  products: Product[]=[];
-  test: string="";
-  // Define the list of products
-  productsList: Product[] = [
-    {
-      id: 1,
-      name: 'Artichoke',
-      price: 3,
-      tags: ['green', 'healthy'],
-      favorite: false,
-      imgUrl: "/assets/Images/Artichoke.jpg",
-    },
-    
-  ]
+   // Define the list of products
+  products: Product[]=[];  
 
-  constructor(private http: HttpClient) {
-    http.get<Product[]>('/products').subscribe(result => {
-      this.products = result;
-    }, error => console.error(error));
-    console.log(this.products);
-   
+  constructor(private http: HttpClient) {}
+
+  /**
+ * Returns an array of all Products.
+ * @returns An array of all Products.
+ */
+  public getAll(): Observable<Product[]> {
+    return this.http.get<Product[]>('/products');
   }
 
+  public getProductList(): Product[] {
+    this.getAll().subscribe(result => (this.products = result));
+    return this.products;
+  }
 
   /**
    * Returns a Product with the given ID.
@@ -49,18 +43,7 @@ export class ProductService {
     }
   }
 
-  /**
-   * Returns an array of all Products.
-   * @returns An array of all Products.
-   */
-  public getAll(): Observable<Product[]> {
-    return this.http.get<Product[]>('/products');
-  }
 
-  public getProductList(): Product[] {
-    this.getAll().subscribe(result => ( this.products = result ));
-      return this.products;
-  }
 
   /**
    * Returns an array of Products that have the given tag.
@@ -70,8 +53,8 @@ export class ProductService {
   public getProductByTag(tag: string): Product[] {
     try {
       return tag == "All" ?
-        this.productsList :
-        this.productsList.filter(product => product.tags?.includes(tag));
+        this.products :
+        this.products.filter(product => product.tags?.includes(tag));
     } catch (error) {
       console.error(`Error getting products by tag: ${error}`);
       throw error;
@@ -138,16 +121,16 @@ export class ProductService {
     try {
       switch (selectedOption) {
         case 'nameAsc':
-          this.productsList = this.productsList.sort((a, b) => a.name.localeCompare(b.name));
+          this.products = this.products.sort((a, b) => a.name.localeCompare(b.name));
           break;
         case 'nameDesc':
-          this.productsList = this.productsList.sort((a, b) => b.name.localeCompare(a.name));
+          this.products = this.products.sort((a, b) => b.name.localeCompare(a.name));
           break;
         case 'priceAsc':
-          this.productsList = this.productsList.sort((a, b) => a.price - b.price);
+          this.products = this.products.sort((a, b) => a.price - b.price);
           break;
         case 'priceDesc':
-          this.productsList = this.productsList.sort((a, b) => b.price - a.price);
+          this.products = this.products.sort((a, b) => b.price - a.price);
           break;
 
       }

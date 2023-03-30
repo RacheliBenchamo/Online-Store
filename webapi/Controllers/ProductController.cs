@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using webapi.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace YourNamespace.API
 {
@@ -32,18 +33,18 @@ namespace YourNamespace.API
             Id = 1,
             Name = "Broccoli",
             Price = 2,
-            Tags = { "good", "green" },
+            Tags =  new string[] { "green", "good" },
             Favorite = true,
             ImgUrl = ""
         },
-        new Product
+        new Product 
         {
             Id = 2,
             Name = "Carrot",
             Price = 1,
-            Tags = { "crunchy", "orange" },
+            Tags = new string[] { "crunchy", "orange" },
             Favorite = false,
-            ImgUrl = ""
+            ImgUrl = "../../../assets/Images/Broccoli.jpg"
         },
                 // Add more products here as needed
         };
