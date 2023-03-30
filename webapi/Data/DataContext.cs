@@ -8,5 +8,7 @@ namespace webapi.Data
         public DataContext(DbContextOptions<DataContext> options):base(options) {}
 
         public DbSet<Product> Products => Set<Product>();
+
+        public DbSet<User> Users => Set<User>();
     }
 }

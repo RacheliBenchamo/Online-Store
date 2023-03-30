@@ -5,6 +5,13 @@ const PROXY_CONFIG = [
     ],
     target: "https://localhost:7020",
     secure: false
+  },
+  {
+    context: [
+      "/users",
+    ],
+    target: "https://localhost:7020",
+    secure: false
   }
 ]
 

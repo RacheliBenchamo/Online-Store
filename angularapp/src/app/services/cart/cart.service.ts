@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Cart } from '../../shared/models/Cart';
-import { CartItem } from '../../shared/models/CartItem';
-import { Product } from '../../shared/models/Product';
+import { Cart } from '../../models/Cart';
+import { CartItem } from '../../models/CartItem';
+import { Product } from '../../models/Product';
 
 @Injectable({
   providedIn: 'root'

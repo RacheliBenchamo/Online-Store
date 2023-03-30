@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using webapi.Data;
 using webapi.Models;
 
-namespace YourNamespace.API
+namespace webapi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
