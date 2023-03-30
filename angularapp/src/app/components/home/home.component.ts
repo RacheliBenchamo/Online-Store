@@ -24,17 +24,16 @@ export class HomeComponent implements OnInit {
       })
     ).subscribe(params => {
       if (params && params['searchTerm']) {
-        this.products = this.productService.getAllProductsBySearchTerm(params['searchTerm']);
+        this.productService.getAllProductsBySearchTerm(params['searchTerm']).subscribe(products => (this.products = products));
       } else {
-        this.productService.getAll().subscribe(result => (this.products = result));
+        this.productService.getAllProducts().subscribe(products => {this.products = products;});
       }
     });
   }
 
   sortProducts(selectedOption: string) {
     try {
-      this.productService.sortedProductsBy(selectedOption);
-      this.productService.getAll().subscribe(result => (this.products = result));
+      this.productService.sortedProductsBy(selectedOption).subscribe(result => (this.products = result));
     } catch (error) {
       console.log('Error occurred during sorting: ', error);
     }

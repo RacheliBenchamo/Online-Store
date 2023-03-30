@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapi.Data;
 using webapi.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace YourNamespace.API
 {
@@ -20,19 +16,15 @@ namespace YourNamespace.API
             this._context = context;
         }
 
-        // public ProductsController() { }
-
-
-
-        // GET products
+        // GET all products
         [HttpGet(Name = "GetAllProducts")]
-        public async Task<ActionResult<List<Product>>> Get()
+        public async Task<ActionResult<List<Product>>> GetAllProducts()
         {
             return Ok(await _context.Products.ToListAsync());
         }
 
         [HttpGet("{id}", Name = "GetProductById")]
-        public async Task<ActionResult<Product>> Get(int id)
+        public async Task<ActionResult<Product>> GetProductById(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
@@ -40,6 +32,45 @@ namespace YourNamespace.API
 
             return Ok(product);
         }
+
+        // GET products by search term
+        [HttpGet("search/{searchTerm}", Name = "GetProductsBySearchTerm")]
+        public async Task<ActionResult<List<Product>>> GetBySearchTerm(string searchTerm)
+        {
+            var products = _context.Products
+                .Where(p => p.Name.ToLower().Contains(searchTerm.ToLower()));
+
+            return Ok(await products.ToListAsync());
+        }
+
+
+        [HttpGet("sorted/{sort}", Name = "GetSortedProducts")]
+        public async Task<ActionResult<List<Product>>> GetSortedProducts(string sort)
+        {
+            var products = _context.Products.AsQueryable();
+
+            switch (sort)
+            {
+                case "nameAsc":
+                    products = products.OrderBy(p => p.Name);
+                    break;
+                case "nameDesc":
+                    products = products.OrderByDescending(p => p.Name);
+                    break;
+                case "priceAsc":
+                    products = products.OrderBy(p => p.Price);
+                    break;
+                case "priceDesc":
+                    products = products.OrderByDescending(p => p.Price);
+                    break;
+                default:
+                    products = products.OrderBy(p => p.Id);
+                    break;
+            }
+
+            return Ok(await products.ToListAsync());
+        }
+
 
 
         [HttpPost(Name = "CreateNewProduct")]
@@ -55,7 +86,7 @@ namespace YourNamespace.API
         public async Task<ActionResult<List<Product>>> UpdateProduct(Product product)
         {
             var dbProduct = await _context.Products.FindAsync(product.Id);
-            if(dbProduct == null)
+            if (dbProduct == null)
                 return BadRequest("Product Not Found.");
 
             dbProduct.Name = product.Name;
@@ -81,4 +112,5 @@ namespace YourNamespace.API
             return Ok(await _context.Products.ToListAsync());
         }
     }
+
 }

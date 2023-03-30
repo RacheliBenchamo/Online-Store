@@ -2,8 +2,6 @@ import { Injectable, OnInit } from '@angular/core';
 import { Product } from '../../shared/models/Product'
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
-import { environment } from '../../../../environment/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +17,8 @@ export class ProductService {
  * Returns an array of all Products.
  * @returns An array of all Products.
  */
-  public getAll(): Observable<Product[]> {
+  public getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>('/products');
-  }
-
-  public getProductList(): Product[] {
-    this.getAll().subscribe(result => (this.products = result));
-    return this.products;
   }
 
   /**
@@ -33,9 +26,9 @@ export class ProductService {
    * @param id - The ID of the Product to return.
    * @returns The Product with the given ID, or undefined if not found.
    */
-  public getProductById(id: number): Product {
+  public getProductById(id: number): Observable<Product> {
     try {
-      return this.getProductList().find(product => product.id == id)!;
+      return this.http.get<Product>(`/products/${id}`);
     } catch (error) {
       console.error(`Error getting product by ID: ${error}`);
       throw error;
@@ -47,23 +40,21 @@ export class ProductService {
   * @param searchTerm - The search term to match against.
   * @returns An array of Products that match the given search term.
   */
-  public getAllProductsBySearchTerm(searchTerm: string): Product[] {
+  public getAllProductsBySearchTerm(searchTerm: string): Observable<Product[]> {
     try {
-      return this.getProductList().filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+      return this.http.get<Product[]>(`/products/search/${searchTerm}`);
     } catch (error) {
       console.error(`Error getting products by search term: ${error}`);
       throw error;
     }
   }
 
-  public sortedProductsBy(selectedOption: string): void {
+  public sortedProductsBy(selectedOption: string): Observable<Product[]> {
     const url = `https://your-api-url.com/products?sort=${selectedOption}`;
 
     try {
-      this.http.get<Product[]>(url).subscribe(products => {
-        this.products = products;
-      });
+      console.log(`/products/sort/${selectedOption}`);
+      return this.http.get<Product[]>(`/products/sorted/${selectedOption}`);
     } catch (error) {
       console.error(`Error getting sorted products: ${error}`);
       throw error;

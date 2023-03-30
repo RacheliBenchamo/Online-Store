@@ -21,7 +21,7 @@ export class ProductPageComponent implements OnInit {
     try {
       this.route.params.subscribe(params => {
         if (params['id']) {
-          this.product = this.productService.getProductById(params['id']);
+          this.productService.getProductById(params['id']).subscribe(result => (this.product = result));
           if (!this.product) {
             throw new Error('Product not found');
           }
