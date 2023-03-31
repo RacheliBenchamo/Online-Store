@@ -41,8 +41,7 @@ namespace webapi.Controllers
 
                 CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                user.FirstName = userDto.FirstName;
-                user.LastName = userDto.LastName;
+                user.Name = userDto.Name;
                 user.IsAdmin = false;
                 user.Email = userDto.Email.ToLower();
                 user.PasswordHash = passwordHash;
@@ -153,8 +152,7 @@ namespace webapi.Controllers
                     }
 
                     // Update user's properties
-                    userDb.FirstName = userDto.FirstName;
-                    userDb.LastName = userDto.LastName;
+                    userDb.Name = userDto.Name;
                     userDb.Email = userDto.Email;
 
                     // Save changes to the database

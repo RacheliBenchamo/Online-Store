@@ -12,10 +12,7 @@ export class User {
   password!: string;
 
   // The name of the product.
-  firstName!: string;
-
-  // The name of the product.
-  lastName!: string;
+  name!: string;
 
   // The price of the product. 
   isAdmin: boolean = false;

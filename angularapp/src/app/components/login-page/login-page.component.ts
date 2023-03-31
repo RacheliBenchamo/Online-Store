@@ -12,7 +12,7 @@ export class LoginPageComponent implements OnInit {
 
   loginForm!: FormGroup;
   isSubmitted: boolean = false;
-  returnUrl: string = '';
+  message!: string;
 
   constructor(private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -25,8 +25,6 @@ export class LoginPageComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     })
-
-    this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'];
   }
 
   public get fc() {
@@ -41,19 +39,19 @@ export class LoginPageComponent implements OnInit {
   }
 
   onSubmit() {
-    this.authService.login({
-      email: this.fc['email'].value,
-      password: this.fc['password'].value
-    }).subscribe(
-      token => {
-        console.log('Login successful');
-        localStorage.setItem('auth_token', token);
-      },
-      error => {
-        console.log('Login failed: ' + error.error);
-      }
-    );
+
+    this.isSubmitted = true;
+    if (this.loginForm.invalid) return;
+
+    this.authService.login({ email: this.fc['email'].value, password: this.fc['password'].value }).
+      subscribe(
+        token => {
+          this.authService.setTokenToLocal(token);
+          this.router.navigateByUrl('');
+        },
+      error => {this.message = error.error;});
   }
+
 }
 
 
