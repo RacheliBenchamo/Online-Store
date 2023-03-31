@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,96 +29,154 @@ namespace webapi.Controllers
             this._httpContextAccessor = httpContextAccessor;
         }
 
-
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto userDto)
         {
-            if (await UserExists(userDto.Email))
+            try
             {
-                return BadRequest("Email already exists");
+                if (await UserExists(userDto.Email))
+                {
+                    return BadRequest("Email already exists");
+                }
+
+                CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                user.FirstName = userDto.FirstName;
+                user.LastName = userDto.LastName;
+                user.IsAdmin = false;
+                user.Email = userDto.Email.ToLower();
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(user);
             }
-
-            CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            user.FirstName = userDto.FirstName;
-            user.LastName = userDto.LastName;
-            user.IsAdmin = false;
-            user.Email = userDto.Email.ToLower();
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "An error occurred while processing your request.");
+            }
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(IUserLogin userLogin)
         {
-            if (!await UserExists(userLogin.Email))
+            try
             {
-                return BadRequest("Email does not exists");
-            }
+                // Retrieve the user from the database.
+                User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
 
-            if (!VerifyPasswordHash(userLogin.Password, user.PasswordHash, user.PasswordSalt))
+                // Return a bad request response if the user doesn't exist or the password is incorrect.
+                if (user == null || !VerifyPasswordHash(userLogin.Password, user.PasswordHash, user.PasswordSalt))
+                    return BadRequest("Invalid login credentials");
+
+                // Generate a token and refresh token and return an OK response with the token.
+                string token = CreateToken(user);
+                var refreshToken = GenerateRefreshToken();
+                SetRefreshToken(refreshToken);
+                return Ok(token);
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Wrong password.");
+                // Log the exception or return a generic error message to the client.
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "An error occurred while processing your request.");
             }
-
-            string token = CreateToken(user);
-
-            var refreshToken = GenerateRefreshToken();
-            SetRefreshToken(refreshToken);
-
-            return Ok(token);
         }
 
         [HttpGet("")]
         [Authorize]
         public async Task<ActionResult<User>> GetUser()
         {
-            var auth = CheckToken();
-
-            if (auth != null)
+            try
             {
-                var userDb = await _context.Products.FindAsync(user.Id);
-                if (userDb == null)
-                    return NotFound();
+                // Check if the user is authenticated.
+                var auth = string.Empty;
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    auth = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+                }
 
-                return Ok(userDb);
+                // If the user is authenticated, retrieve the user from the database.
+                if (auth != null)
+                {
+                    var userDb = await _context.Products.FindAsync(user.Id);
+
+                    // Return a not found response if the user is not found in the database.
+                    if (userDb == null)
+                        return NotFound();
+
+                    // Return the user object.
+                    return Ok(userDb);
+                }
+
+                // If the user is not authenticated, return an unauthorized response.
+                return Unauthorized();
             }
-            return Unauthorized();
+            catch (Exception ex)
+            {
+                // Log the exception or return a generic error message to the client.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
-
         [HttpPut("{userDto}")]
         [Authorize]
         public async Task<ActionResult<User>> UpdateUser(UserDto userDto)
         {
-            var auth = CheckToken();
-
-            if (auth != null)
+            try
             {
-                var userDb = await _context.Users.FindAsync(user.Id);
-
-                if (user == null)
+                // Check if user is authorized
+                var auth = string.Empty;
+                if (_httpContextAccessor.HttpContext != null)
                 {
-                    return NotFound();
+                    auth = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
                 }
-                if(userDto == null)
+
+                if (auth != null)
                 {
-                    return BadRequest("User have to be no null");
+                    // Find user in the database
+                    var userDb = await _context.Users.FindAsync(user.Id);
+
+                    if (user == null)
+                    {
+                        // Return a 404 Not Found error if user is not found in the database
+                        return NotFound();
+                    }
+
+                    if (userDto == null)
+                    {
+                        // Return a 400 Bad Request error if userDto is null
+                        return BadRequest("User cannot be null");
+                    }
+
+                    // Update user's properties
+                    userDb.FirstName = userDto.FirstName;
+                    userDb.LastName = userDto.LastName;
+                    userDb.Email = userDto.Email;
+
+                    // Save changes to the database
+                    await _context.SaveChangesAsync();
+
+                    // Return the updated user
+                    return Ok(userDb);
                 }
-                userDb.FirstName = userDto.FirstName;
-                userDb.LastName = userDto.LastName;
-                userDb.Email = userDto.Email;
 
-                await _context.SaveChangesAsync();
-
-                return Ok(userDb);
+                // Return a 401 Unauthorized error if user is not authorized
+                return Unauthorized();
             }
-            return Unauthorized();           
+            catch (Exception ex)
+            {
+                // Log the error message
+                Console.WriteLine(ex.Message);
+
+                // Return a 500 Internal Server Error to the client
+                return StatusCode(500);
+            }
         }
+
 
         private RefreshToken GenerateRefreshToken()
         {
@@ -190,16 +247,6 @@ namespace webapi.Controllers
         private async Task<bool> UserExists(string email)
         {
             return await _context.Users.AnyAsync(x => x.Email == email.ToLower());
-        }
-
-        public string CheckToken()
-        {
-            var auth = string.Empty;
-            if (_httpContextAccessor.HttpContext != null)
-            {
-                auth = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
-            }
-            return auth;
         }
     }
 }
