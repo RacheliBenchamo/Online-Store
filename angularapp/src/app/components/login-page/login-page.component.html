@@ -2,7 +2,7 @@
   <div class="details">
     <app-title title="Login"></app-title>
 
-    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="input-container">
         <label>Email</label>
         <div>
@@ -26,6 +26,9 @@
 
       <div class="button-container">
         <button type="submit">Login</button>
+      </div>
+      <div class="errors" *ngIf="isSubmitted">
+        <div>{{errorMessage}}</div>
       </div>
     </form>
   </div>

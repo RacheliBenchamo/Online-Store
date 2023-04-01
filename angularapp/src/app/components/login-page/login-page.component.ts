@@ -12,7 +12,7 @@ export class LoginPageComponent implements OnInit {
 
   loginForm!: FormGroup;
   isSubmitted: boolean = false;
-  message!: string;
+  errorMessage!: string;
 
   constructor(private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -31,26 +31,26 @@ export class LoginPageComponent implements OnInit {
     return this.loginForm.controls;
   }
 
-  public submit() {
-    this.isSubmitted = true;
-    if (this.loginForm.invalid)
-      return;
-    alert("login success");
-  }
 
   onSubmit() {
-
     this.isSubmitted = true;
     if (this.loginForm.invalid) return;
-
-    this.authService.login({ email: this.fc['email'].value, password: this.fc['password'].value }).
-      subscribe(
-        token => {
-          this.authService.setTokenToLocal(token);
-          this.router.navigateByUrl('');
-        },
-      error => {this.message = error.error;});
+    console.log("login page");
+    this.authService.login({ email: this.fc['email'].value, password: this.fc['password'].value }).subscribe(
+      token => {
+        this.authService.setTokenToLocal(token);
+        this.router.navigateByUrl('');
+      },
+      error => {
+        // Display the error message to the user
+        this.errorMessage = this.authService.loginErrMsg;
+      }
+    );
   }
+
+
+
+
 
 }
 

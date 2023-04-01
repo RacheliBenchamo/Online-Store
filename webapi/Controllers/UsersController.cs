@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -54,9 +55,9 @@ namespace webapi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+
         }
 
 
@@ -65,26 +66,48 @@ namespace webapi.Controllers
         {
             try
             {
-                // Retrieve the user from the database.
-                User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
+                
 
-                // Return a bad request response if the user doesn't exist or the password is incorrect.
-                if (user == null || !VerifyPasswordHash(userLogin.Password, user.PasswordHash, user.PasswordSalt))
+                //// Retrieve the user from the database.
+                User userDb = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLogin.Email.ToLower());
+
+                //// Return a bad request response if the user doesn't exist or the password is incorrect.
+                if (userDb == null || !VerifyPasswordHash(userLogin.Password, userDb.PasswordHash, userDb.PasswordSalt))
                     return BadRequest("Invalid login credentials");
 
+                Debug.WriteLine("1");
                 // Generate a token and refresh token and return an OK response with the token.
-                string token = CreateToken(user);
+                string token = CreateToken(userDb);
+                Debug.WriteLine("2");
+
                 var refreshToken = GenerateRefreshToken();
+                Debug.WriteLine("3");
+
                 SetRefreshToken(refreshToken);
+                Debug.WriteLine("4");
+
+
+                userDb.RefreshToken = refreshToken.Token;
+                Debug.WriteLine("5");
+
+                userDb.TokenCreated = refreshToken.Created;
+                Debug.WriteLine("6");
+
+                userDb.TokenExpires = refreshToken.Expires;
+                Debug.WriteLine("7");
+
+
+                //Save changes to the database
+                await _context.SaveChangesAsync();
+
                 return Ok(token);
             }
             catch (Exception ex)
             {
-                // Log the exception or return a generic error message to the client.
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
         [HttpGet("")]
         [Authorize]
@@ -117,9 +140,9 @@ namespace webapi.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception or return a generic error message to the client.
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+
         }
         [HttpPut("{userDto}")]
         [Authorize]
@@ -167,12 +190,9 @@ namespace webapi.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error message
-                Console.WriteLine(ex.Message);
-
-                // Return a 500 Internal Server Error to the client
-                return StatusCode(500);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+
         }
 
 
@@ -209,18 +229,21 @@ namespace webapi.Controllers
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
+            Debug.WriteLine("1.1");
+
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value));
 
+            Debug.WriteLine("1.2");
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
+            Debug.WriteLine("1.3");
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
-
+            Debug.WriteLine("1.4");
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
+            Debug.WriteLine("1.5");
             return jwt;
         }
 
@@ -238,6 +261,7 @@ namespace webapi.Controllers
             using (var hmac = new HMACSHA512(passwordSalt))
             {
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                Debug.WriteLine("VerifyPasswordHash2");
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
