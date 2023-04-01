@@ -75,27 +75,18 @@ namespace webapi.Controllers
                 if (userDb == null || !VerifyPasswordHash(userLogin.Password, userDb.PasswordHash, userDb.PasswordSalt))
                     return BadRequest("Invalid login credentials");
 
-                Debug.WriteLine("1");
                 // Generate a token and refresh token and return an OK response with the token.
                 string token = CreateToken(userDb);
-                Debug.WriteLine("2");
 
                 var refreshToken = GenerateRefreshToken();
-                Debug.WriteLine("3");
 
                 SetRefreshToken(refreshToken);
-                Debug.WriteLine("4");
-
 
                 userDb.RefreshToken = refreshToken.Token;
-                Debug.WriteLine("5");
 
                 userDb.TokenCreated = refreshToken.Created;
-                Debug.WriteLine("6");
 
                 userDb.TokenExpires = refreshToken.Expires;
-                Debug.WriteLine("7");
-
 
                 //Save changes to the database
                 await _context.SaveChangesAsync();
@@ -229,21 +220,15 @@ namespace webapi.Controllers
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            Debug.WriteLine("1.1");
-
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value));
 
-            Debug.WriteLine("1.2");
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            Debug.WriteLine("1.3");
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
-            Debug.WriteLine("1.4");
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            Debug.WriteLine("1.5");
             return jwt;
         }
 
