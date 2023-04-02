@@ -27,7 +27,7 @@
     </div>
     <button *ngIf="!isAdmin()" (click)="addToCart()">Add To Cart</button>
     <div *ngIf="isAdmin()">
-      <a routerLink="/editProduct/{{product.id}}">Edit Product</a>
+      <a routerLink="/editProduct/{{product.name}}">Edit Product</a>
       <button (click)="deleteProduct()">Delete Product</button>
     </div>
   </div>

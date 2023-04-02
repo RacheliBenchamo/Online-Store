@@ -2,8 +2,6 @@
  * Represents a product in the online store.
  */
 export class Product {
-  // The unique identifier for the product. 
-  id!: number;
 
   // The name of the product.
   name!: string;

@@ -22,8 +22,8 @@ export class ProductPageComponent implements OnInit {
   ngOnInit(): void {
     try {
       this.route.params.subscribe(params => {
-        if (params['id']) {
-          this.productService.getProductById(params['id']).subscribe(result => (this.product = result));
+        if (params['name']) {
+          this.productService.getProductByName(params['name']).subscribe(result => (this.product = result));
           if (!this.product) {
             throw new Error('Product not found');
           }
@@ -49,7 +49,7 @@ export class ProductPageComponent implements OnInit {
     }
   }
   public deleteProduct() {
-    this.productService.deleteProduct(this.product.id).subscribe(
+    this.productService.deleteProduct(this.product.name).subscribe(
       (products: Product[]) => {
         // Navigate back to the product list page
         this.router.navigateByUrl('');

@@ -47,7 +47,6 @@ export class AddProductPageComponent implements OnInit {
     if (this.addProductForm.invalid) return;
 
     const newProduct: Product = {
-      id: 20,
       name: this.fc['name'].value,
       imgUrl: this.fc['imgUrl'].value,
       price: this.fc['price'].value,

@@ -23,10 +23,10 @@ namespace webapi.Controllers
             return Ok(await _context.Products.ToListAsync());
         }
 
-        [HttpGet("{id}", Name = "GetProductById")]
-        public async Task<ActionResult<Product>> GetProductById(int id)
+        [HttpGet("{name}", Name = "GetProductByName")]
+        public async Task<ActionResult<Product>> GetProductByName(string name)
         {
-            var product = await _context.Products.FindAsync(id);
+            Product product = await _context.Products.FirstOrDefaultAsync(u => u.Name == name);
             if (product == null)
                 return NotFound();
 
@@ -74,18 +74,26 @@ namespace webapi.Controllers
 
 
         [HttpPost(Name = "CreateNewProduct")]
-        public async Task<ActionResult<List<Product>>> AddNewProduct(Product product)
+        public async Task<ActionResult<List<Product>>> AddNewProduct(ProductDto product)
         {
-            _context.Products.Add(product);
+            Product productDb = new Product() { 
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock,
+                Favorite = product.Favorite,
+                ImgUrl = product.ImgUrl,
+            };
+
+            _context.Products.Add(productDb);
             await _context.SaveChangesAsync();
 
             return Ok(await _context.Products.ToListAsync());
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<List<Product>>> UpdateProduct(int id, Product product)
+        [HttpPut("{name}")]
+        public async Task<ActionResult<List<Product>>> UpdateProduct(string name, Product product)
         {
-            var dbProduct = await _context.Products.FindAsync(id);
+            Product dbProduct = await _context.Products.FirstOrDefaultAsync(u => u.Name == name);
             if (dbProduct == null)
                 return BadRequest("Product Not Found.");
 
@@ -101,10 +109,10 @@ namespace webapi.Controllers
         }
 
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<List<Product>>> DeleteProduct(int id)
+        [HttpDelete("{name}")]
+        public async Task<ActionResult<List<Product>>> DeleteProduct(string name)
         {
-            var dbProduct = await _context.Products.FindAsync(id);
+            Product dbProduct = await _context.Products.FirstOrDefaultAsync(u => u.Name == name);
             if (dbProduct == null)
                 return BadRequest("Product Not Found.");
 

@@ -29,7 +29,7 @@ export class CartPageComponent implements OnInit {
 
   public removeFromCart(cartItem: CartItem) {
     try {
-      this.cartService.removeFromCart(cartItem.product.id);
+      this.cartService.removeFromCart(cartItem.product.name);
       this.setCart();
     } catch (error) {
       console.log('Error occurred during remove from cart: ', error);
@@ -38,7 +38,7 @@ export class CartPageComponent implements OnInit {
 
   public changeQuantity(cartItem: CartItem, quantity: number) {
     try {
-      this.cartService.changeQuantity(cartItem.product.id, quantity);
+      this.cartService.changeQuantity(cartItem.product.name, quantity);
       this.setCart();
     } catch (error) {
       console.error("Error occurred during change quantity", error);

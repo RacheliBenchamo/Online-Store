@@ -23,8 +23,8 @@ export class EditProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.productService.getProductById(params['id']).subscribe(result => {
+      if (params['name']) {
+        this.productService.getProductByName(params['name']).subscribe(result => {
           this.product = result;
           if (!this.product) {
             throw new Error('Product not found');
@@ -54,14 +54,13 @@ export class EditProductComponent implements OnInit {
     if (this.editProductForm.invalid) return;
 
     const updatedProduct: Product = {
-      id: this.product.id,
       name: this.fc['name'].value,
       imgUrl: this.fc['imgUrl'].value,
       price: this.fc['price'].value,
       favorite: this.product.favorite,
       stock: this.fc['stock'].value,
     };
-    this.productService.updateProduct(updatedProduct).subscribe(
+    this.productService.updateProduct(updatedProduct, this.product.name).subscribe(
       products => {
         this.message = 'Edit successful';
       },

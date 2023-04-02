@@ -21,26 +21,26 @@ export class ProductService {
     return this.http.get<Product[]>('/products');
   }
 
-  updateProduct(product: Product): Observable<Product[]> {
-    return this.http.put<Product[]>(`/products/${product.id}`, product);
+  updateProduct(product: Product, orgName: string): Observable<Product[]> {
+    return this.http.put<Product[]>(`/products/${orgName}`, product);
   }
 
   public addProduct(product: Product): Observable<Product[]> {
-    return this.http.post<Product[]>('/products/CreateNewProduct', product);
+    return this.http.post<Product[]>('/products', product);
   }
 
 
-  deleteProduct(id: number): Observable<Product[]> {
-    return this.http.delete<Product[]>(`/products/${id}`);
+  deleteProduct(name: string): Observable<Product[]> {
+    return this.http.delete<Product[]>(`/products/${name}`);
   }
   /**
    * Returns a Product with the given ID.
-   * @param id - The ID of the Product to return.
+   * @param name - The name of the Product to return.
    * @returns The Product with the given ID, or undefined if not found.
    */
-  public getProductById(id: number): Observable<Product> {
+  public getProductByName(name: string): Observable<Product> {
     try {
-      return this.http.get<Product>(`/products/${id}`);
+      return this.http.get<Product>(`/products/${name}`);
     } catch (error) {
       console.error(`Error getting product by ID: ${error}`);
       throw error;

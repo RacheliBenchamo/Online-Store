@@ -18,9 +18,9 @@ export class CartService {
    */
   public addToCart(product: Product): void {
     try {
-      let cartItem = this.cart.items.find(item => item.product.id === product.id);
+      let cartItem = this.cart.items.find(item => item.product.name === product.name);
       if (cartItem) {
-        this.changeQuantity(product.id, cartItem.quantity + 1);
+        this.changeQuantity(product.name, cartItem.quantity + 1);
       } else {
         this.cart.items.push(new CartItem(product));
       }
@@ -33,9 +33,9 @@ export class CartService {
    * Remove a product from the cart.
    * @param productId - The ID of the product to remove from the cart.
    */
-  public removeFromCart(productId: number): void {
+  public removeFromCart(productName: string): void {
     try {
-      this.cart.items = this.cart.items.filter(item => item.product.id !== productId);
+      this.cart.items = this.cart.items.filter(item => item.product.name !== productName);
     } catch (error) {
       console.error(`Error removing product from cart: ${error}`);
     }
@@ -46,9 +46,9 @@ export class CartService {
    * @param productId - The ID of the product to change the quantity of.
    * @param quantity - The new quantity of the product.
    */
-  public changeQuantity(productId: number, quantity: number): void {
+  public changeQuantity(productName: string, quantity: number): void {
     try {
-      let cartItem = this.cart.items.find(item => item.product.id === productId);
+      let cartItem = this.cart.items.find(item => item.product.name === productName);
       if (cartItem) {
         cartItem.quantity = quantity;
       }

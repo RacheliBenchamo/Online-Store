@@ -23,8 +23,8 @@ import { AddProductPageComponent } from './components/add-product-page/add-produ
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'search/:searchTerm', component: HomeComponent },
-  { path: 'product/:id', component: ProductPageComponent },
-  { path: 'editProduct/:id', component: EditProductComponent },
+  { path: 'product/:name', component: ProductPageComponent },
+  { path: 'editProduct/:name', component: EditProductComponent },
   { path: 'add-product-page', component: AddProductPageComponent },
   { path: 'cart-page', component: CartPageComponent },
   { path: 'login', component: LoginPageComponent },

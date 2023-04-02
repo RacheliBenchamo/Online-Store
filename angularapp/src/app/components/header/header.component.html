@@ -9,8 +9,8 @@
         <li class="menu-container" *ngIf="isUserLogin()">
           <a href="#">{{getName()}}</a>
           <div class="menu">
-            <a href="#" routerLink="/profile">Profile</a>
-            <a href="#" routerLink="/orders">Orders</a>
+            <a *ngIf="!isAdmin()" routerLink="/profile">Profile</a>
+            <a *ngIf="!isAdmin()" routerLink="/orders">Orders</a>
             <a (click)="logout()">Logout</a>
           </div>
         </li>
@@ -20,7 +20,7 @@
           </a>
         </li>
         <li *ngIf="isAdmin()">
-          <a href="#" routerLink="/add-product-page">Add Product</a>
+          <a routerLink="/add-product-page">Add Product</a>
         </li>
       </ul>
     </nav>
