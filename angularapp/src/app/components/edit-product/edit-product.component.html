@@ -1,0 +1,63 @@
+<app-not-found [visiable]="!product"
+               notFoundMessage="Product Not Found"
+               resetLinkText="Go To Home Page">
+</app-not-found>
+
+
+
+<div *ngIf="product" class="container">
+  <div class="details">
+    <app-title title="Edit Product"></app-title>
+
+    <form [formGroup]="editProductForm" (ngSubmit)="onSubmit()">
+      <div class="input-container">
+        <label>Name</label>
+        <div>
+          <input type="text" formControlName="name" required />
+          <div class="errors" *ngIf="fc['name']['errors'] && isSubmitted">
+            <div *ngIf="fc['name']['errors']['required']">Name field can't be empty</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <label>Image URL</label>
+        <div>
+          <input type="text" formControlName="imgUrl" required />
+          <div class="errors" *ngIf="fc['imgUrl']['errors'] && isSubmitted">
+            <div *ngIf="fc['imgUrl']['errors']['required']">Image URL field can't be empty</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <label>Price</label>
+        <div>
+          <input type="number" formControlName="price" required />
+          <div class="errors" *ngIf="fc['price']['errors'] && isSubmitted">
+            <div *ngIf="fc['price']['errors']['required']">Price field can't be empty</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <label>Stock</label>
+        <div>
+          <input type="number" formControlName="stock" required />
+          <div class="errors" *ngIf="fc['stock']['errors'] && isSubmitted">
+            <div *ngIf="fc['stock']['errors']['required']">Stock field can't be empty</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button type="submit">Save</button>
+      </div>
+      <div class="message" *ngIf="isSubmitted">
+        <div>{{message}}</div>
+      </div>
+
+
+    </form>
+  </div>
+</div>

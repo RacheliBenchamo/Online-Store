@@ -82,10 +82,10 @@ namespace webapi.Controllers
             return Ok(await _context.Products.ToListAsync());
         }
 
-        [HttpPut]
-        public async Task<ActionResult<List<Product>>> UpdateProduct(Product product)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<List<Product>>> UpdateProduct(int id, Product product)
         {
-            var dbProduct = await _context.Products.FindAsync(product.Id);
+            var dbProduct = await _context.Products.FindAsync(id);
             if (dbProduct == null)
                 return BadRequest("Product Not Found.");
 
@@ -93,11 +93,13 @@ namespace webapi.Controllers
             dbProduct.ImgUrl = product.ImgUrl;
             dbProduct.Price = product.Price;
             dbProduct.Favorite = product.Favorite;
+            dbProduct.Stock = product.Stock;
 
             await _context.SaveChangesAsync();
 
             return Ok(await _context.Products.ToListAsync());
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Product>>> DeleteProduct(int id)

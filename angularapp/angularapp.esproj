@@ -12,5 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="environment\" />
+    <Folder Include="src\validators\" />
   </ItemGroup>
 </Project>

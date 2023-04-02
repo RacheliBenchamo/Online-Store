@@ -21,6 +21,18 @@ export class ProductService {
     return this.http.get<Product[]>('/products');
   }
 
+  updateProduct(product: Product): Observable<Product[]> {
+    return this.http.put<Product[]>(`/products/${product.id}`, product);
+  }
+
+  public addProduct(product: Product): Observable<Product[]> {
+    return this.http.post<Product[]>('/products/CreateNewProduct', product);
+  }
+
+
+  deleteProduct(id: number): Observable<Product[]> {
+    return this.http.delete<Product[]>(`/products/${id}`);
+  }
   /**
    * Returns a Product with the given ID.
    * @param id - The ID of the Product to return.
@@ -60,6 +72,7 @@ export class ProductService {
       throw error;
     }
   }
+
 
 
 }

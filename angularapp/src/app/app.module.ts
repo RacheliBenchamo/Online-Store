@@ -16,13 +16,19 @@ import { FilterProductsComponent } from './components/filter-products/filter-pro
 import { ManageStoreComponent } from './components/manage-store/manage-store.component';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { TitleComponent } from './components/title/title.component';
+import { RegisterPageComponent } from './components/register-page/register-page.component';
+import { EditProductComponent } from './components/edit-product/edit-product.component';
+import { AddProductPageComponent } from './components/add-product-page/add-product-page.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'search/:searchTerm', component: HomeComponent },
   { path: 'product/:id', component: ProductPageComponent },
+  { path: 'editProduct/:id', component: EditProductComponent },
+  { path: 'add-product-page', component: AddProductPageComponent },
   { path: 'cart-page', component: CartPageComponent },
   { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterPageComponent },
 ];
 
 @NgModule({
@@ -37,7 +43,10 @@ const routes: Routes = [
     FilterProductsComponent,
     ManageStoreComponent,
     LoginPageComponent,
-    TitleComponent
+    TitleComponent,
+    RegisterPageComponent,
+    EditProductComponent,
+    AddProductPageComponent
   ],
   imports: [
     BrowserModule,

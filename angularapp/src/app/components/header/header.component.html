@@ -7,17 +7,20 @@
           <a href="#" routerLink="/login">Login</a>
         </li>
         <li class="menu-container" *ngIf="isUserLogin()">
-          <a href="#" routerLink="/dashboard">{{user.name}}</a>
+          <a href="#">{{getName()}}</a>
           <div class="menu">
             <a href="#" routerLink="/profile">Profile</a>
             <a href="#" routerLink="/orders">Orders</a>
             <a (click)="logout()">Logout</a>
           </div>
         </li>
-        <li>
+        <li *ngIf="!isAdmin()">
           <a href="#" routerLink="/cart-page">
             Cart <span> 3 </span>
           </a>
+        </li>
+        <li *ngIf="isAdmin()">
+          <a href="#" routerLink="/add-product-page">Add Product</a>
         </li>
       </ul>
     </nav>

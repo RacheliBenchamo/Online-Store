@@ -20,6 +20,15 @@
         {{product.price|currency}}
       </span>
     </div>
-    <button (click)="addToCart()" >Add To Cart</button>
+    <div  *ngIf="isAdmin()" class="stock">
+      <span>
+        {{product.stock}}
+      </span>
+    </div>
+    <button *ngIf="!isAdmin()" (click)="addToCart()">Add To Cart</button>
+    <div *ngIf="isAdmin()">
+      <a routerLink="/editProduct/{{product.id}}">Edit Product</a>
+      <button (click)="deleteProduct()">Delete Product</button>
+    </div>
   </div>
 </div>

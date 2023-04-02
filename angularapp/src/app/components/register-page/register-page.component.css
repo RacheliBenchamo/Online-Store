@@ -1,9 +1,4 @@
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  margin-top: 3rem;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -12,22 +7,7 @@
 }
 
 .details {
-  width: 30rem;
   margin-bottom: 20px;
-}
-
-form{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
 }
 
 .input-container {
@@ -77,16 +57,16 @@ form{
   color: green;
 }
 
-.register {
+.login {
   margin-top: 20px;
   text-align: center;
 }
 
-  .register a {
+  .login a {
     color: #e72929;
     text-decoration: none;
   }
 
-    .register a:hover {
+    .login a:hover {
       text-decoration: underline;
     }

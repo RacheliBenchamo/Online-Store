@@ -15,6 +15,7 @@ export class AuthService {
   private userSubject = new BehaviorSubject<User>(new User());
   public userObservable: Observable<User>;
   private loginErrorMessage: string = '';
+  private currUser!: User;
 
   constructor(private http: HttpClient,
     private toastrService: ToastrService) {
@@ -22,14 +23,19 @@ export class AuthService {
   }
 
   public register(user: User): Observable<User> {
-    return this.http.post<User>(
-      '/Users/register',
-      user
+    return this.http.post<User>('/users/register', user).pipe(
+      map((response: User) => {
+        return response; // Return the response as a User object
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(error); // Rethrow the error to propagate it further
+      })
     );
   }
-  public login(userLogin: IUserLogin): Observable<string> {
-    return this.http.post<string>('/users/login', userLogin).pipe(
-      map((response: string) => {
+
+  public login(userLogin: IUserLogin): Observable<{ token: string, user: User }> {
+    return this.http.post<{ token: string, user: User }>('/users/login', userLogin).pipe(
+      map((response: { token: string, user: User }) => {
         return response; // Return the response as is
       }),
       catchError((error: HttpErrorResponse) => {
@@ -40,16 +46,16 @@ export class AuthService {
     );
   }
 
-  getUser(): Observable<User> {
-    return this.http.get<User>('/users').pipe(
-      map((response: User) => {
-        return response; // Return the response as a User object
-      }),
-      catchError((error: HttpErrorResponse) => {
-        return throwError(error); // Rethrow the error to propagate it further
-      })
-    );
-  }
+  //public getUser(): Observable<User> {
+  //  return this.http.get<User>('/users').pipe(
+  //    map((user: User) => {
+  //      return user; 
+  //    }),
+  //    catchError((error: HttpErrorResponse) => {
+  //      return throwError(error); 
+  //    })
+  //  );
+  //}
 
   public get loginErrMsg(): string {
 
@@ -72,6 +78,14 @@ export class AuthService {
     if (!authToken) 
         return false;
     return true;
+  }
+
+  public getUser(): User {
+    return this.currUser;
+  }
+
+  public setUser(user: User): void {
+    this.currUser = user;
   }
 
   public logout() {

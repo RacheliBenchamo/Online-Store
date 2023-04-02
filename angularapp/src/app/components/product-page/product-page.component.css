@@ -1,22 +1,22 @@
-.container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    margin: 3rem;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 3rem;
 }
 
-.container > *{
+  .container > * {
     min-width: 25rem;
     max-width: 40rem;
-}
+  }
 
-img{
-    border-radius: 3rem;
-    flex: 1 0;
-    object-fit: cover;
-    height: 35rem;
-    margin: 1rem;
+img {
+  border-radius: 3rem;
+  flex: 1 0;
+  object-fit: cover;
+  height: 35rem;
+  margin: 1rem;
 }
 
 .details {
@@ -26,37 +26,51 @@ img{
   flex: 1 0;
 }
 
-.details  .header {
+  .details .header {
     display: flex;
     justify-content: space-between;
-}
+    flex-wrap: wrap;
+  }
 
-.details .name {
+  .details .name {
     font-size: 2rem;
     font-weight: bold;
-}
+    margin-right: 2rem;
+  }
 
-.details .favorite {
+  .details .favorite {
     color: #e72929;
     font-size: 2.5rem;
-}
+  }
 
-.details .favorite.not {
+    .details .favorite.not {
       color: dimgrey;
-}
+    }
 
-.details .price {
+  .details .price {
     font-size: 1.8rem;
     margin: 2rem 2rem 2rem 0;
     color: green;
-}
+    align-self: flex-start;
+  }
 
-.details .price::before {
-    content: "Price";
-    color: darkgrey
-}
+    .details .price::before {
+      content: "Price : ";
+      color: darkgrey
+    }
 
-.details button {
+  .details .stock {
+    font-size: 1.8rem;
+    margin: 2rem 2rem 2rem 0;
+    align-self: flex-start;
+  }
+
+    .details .stock::before {
+      content: "Stock : ";
+      color: darkgrey
+    }
+
+  .details button {
     color: white;
     background: #e72929;
     border: none;
@@ -65,9 +79,35 @@ img{
     border-radius: 10rem;
     outline: none;
     opacity: .8;
-}
+    align-self: flex-start;
+    margin-top: 2rem;
+  }
 
-  .details button:hover {
-    opacity: 1;
-    cursor: pointer;
+    .details button:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+
+  .details a {
+    color: white;
+    background: #e72929;
+    border: none;
+    font-size: 1.2rem;
+    padding: 1rem;
+    border-radius: 10rem;
+    outline: none;
+    opacity: .8;
+    align-self: flex-start;
+    margin-top: 2rem;
+    margin-right: 2rem;
+  }
+
+    .details a:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+
+  .details button + a {
+    margin-top: 0;
+    margin-right: 0;
   }

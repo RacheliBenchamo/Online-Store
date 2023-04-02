@@ -1,33 +1,12 @@
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  margin-top: 3rem;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
-  background-color: #fff;
 }
 
 .details {
-  width: 30rem;
   margin-bottom: 20px;
-}
-
-form{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
 }
 
 .input-container {
@@ -42,10 +21,9 @@ form{
 
   .input-container input {
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    outline: none;
   }
 
 .errors {
@@ -59,7 +37,7 @@ form{
 }
 
   .button-container button {
-    padding: 10px 20px;
+    padding: 5px 10px;
     background-color: #e72929;
     color: #fff;
     border: none;
@@ -77,16 +55,8 @@ form{
   color: green;
 }
 
-.register {
-  margin-top: 20px;
-  text-align: center;
-}
-
-  .register a {
-    color: #e72929;
-    text-decoration: none;
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 10px;
   }
-
-    .register a:hover {
-      text-decoration: underline;
-    }
+}

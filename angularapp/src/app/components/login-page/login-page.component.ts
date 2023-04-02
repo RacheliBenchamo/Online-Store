@@ -31,16 +31,16 @@ export class LoginPageComponent implements OnInit {
     return this.loginForm.controls;
   }
 
-
   onSubmit() {
     this.isSubmitted = true;
 
     if (this.loginForm.invalid) return;
 
     this.authService.login({ email: this.fc['email'].value, password: this.fc['password'].value }).subscribe(
-      token => {
-        console.log(" token", token);
-        this.authService.setTokenToLocal(token);
+      response => {
+        console.log(" response", response);
+        this.authService.setTokenToLocal(response.token);
+        this.authService.setUser(response.user);
         this.router.navigateByUrl('');
       },
       error => {
@@ -49,6 +49,7 @@ export class LoginPageComponent implements OnInit {
       }
     );
   }
+
 
 }
 

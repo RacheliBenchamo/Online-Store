@@ -17,4 +17,6 @@ export class Product {
   // The URL for the product's image.
   imgUrl!: string;
 
+  stock!: number;
+
 }

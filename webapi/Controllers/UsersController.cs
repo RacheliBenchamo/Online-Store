@@ -17,6 +17,7 @@ namespace webapi.Controllers
     {
 
         private readonly DataContext _context;
+        public static string CurrUserEmail ="";
         public static User user = new User();
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -66,6 +67,7 @@ namespace webapi.Controllers
         {
             try
             {
+                Debug.WriteLine("in Login");
                 // Retrieve the user from the database.
                 User userDb = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLogin.Email.ToLower());
 
@@ -81,11 +83,18 @@ namespace webapi.Controllers
                 userDb.TokenCreated = refreshToken.Created;
                 userDb.TokenExpires = refreshToken.Expires;
 
+                CurrUserEmail= userLogin.Email.ToLower();
+
                 //Save changes to the database
                 await _context.SaveChangesAsync();
 
                 // Return a JSON response with the token.
-                return new { token };
+                // Return a JSON response with the token and user object.
+                return new { token,
+                    user = new { email = userDb.Email,
+                        password = userLogin.Password,
+                        name = userDb.Name,
+                        isAdmin = userDb.IsAdmin} };
             }
             catch (Exception ex)
             {
@@ -98,37 +107,31 @@ namespace webapi.Controllers
         [Authorize]
         public async Task<ActionResult<User>> GetUser()
         {
+            Debug.WriteLine("in GetUser 1");
             try
             {
-                // Check if the user is authenticated.
-                var auth = string.Empty;
-                if (_httpContextAccessor.HttpContext != null)
-                {
-                    auth = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
-                }
+                Debug.WriteLine("in GetUser");
+                // Get the user's email from the token
+                var emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email);
+                var email = emailClaim.Value;
 
-                // If the user is authenticated, retrieve the user from the database.
-                if (auth != null)
-                {
-                    var userDb = await _context.Products.FindAsync(user.Id);
+                if (email == null)
+                    return Unauthorized();
 
-                    // Return a not found response if the user is not found in the database.
-                    if (userDb == null)
-                        return NotFound();
+                // Find the user in the database
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-                    // Return the user object.
-                    return Ok(userDb);
-                }
+                if (user == null) 
+                    return NotFound();
 
-                // If the user is not authenticated, return an unauthorized response.
-                return Unauthorized();
+                return Ok(user);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
         }
+
 
 
         [HttpPut("{userDto}")]
@@ -147,9 +150,9 @@ namespace webapi.Controllers
                 if (auth != null)
                 {
                     // Find user in the database
-                    var userDb = await _context.Users.FindAsync(user.Id);
+                    var userDb = await _context.Users.FirstOrDefaultAsync(u => u.Email == auth);
 
-                    if (user == null)
+                    if (userDb == null)
                     {
                         // Return a 404 Not Found error if user is not found in the database
                         return NotFound();
@@ -163,7 +166,6 @@ namespace webapi.Controllers
 
                     // Update user's properties
                     userDb.Name = userDto.Name;
-                    userDb.Email = userDto.Email;
 
                     // Save changes to the database
                     await _context.SaveChangesAsync();
@@ -181,6 +183,7 @@ namespace webapi.Controllers
             }
 
         }
+
 
 
         private RefreshToken GenerateRefreshToken()

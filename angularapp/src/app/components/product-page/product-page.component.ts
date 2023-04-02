@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CartService } from '../../services/cart/cart.service';
 import { Product } from '../../models/Product';
 import { ProductService } from '../../services/product/product.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-product-page',
@@ -15,7 +16,8 @@ export class ProductPageComponent implements OnInit {
 
   constructor(private productService: ProductService,
     private route: ActivatedRoute, private router: Router,
-    private cartService: CartService) { }
+    private cartService: CartService,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
     try {
@@ -32,16 +34,31 @@ export class ProductPageComponent implements OnInit {
     }
   }
 
+  public isAdmin() {
+    return this.authService.getUser().isAdmin;
+  }
+
   public addToCart() {
     try {
       if (!this.product) {
         throw new Error('Product is not available');
       }
       this.cartService.addToCart(this.product);
-      this.router.navigateByUrl("/cart-page");
     } catch (error) {
       console.log('Error occurred during adding product to cart: ', error);
     }
+  }
+  public deleteProduct() {
+    this.productService.deleteProduct(this.product.id).subscribe(
+      (products: Product[]) => {
+        // Navigate back to the product list page
+        this.router.navigateByUrl('');
+      },
+      error => {
+        console.error('Error deleting product:', error);
+        // Do something to notify the user that the product delete failed
+      }
+    );
   }
 
 }

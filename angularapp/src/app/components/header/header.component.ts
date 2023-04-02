@@ -25,23 +25,24 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.getUser().subscribe(
-      (response: User) => {
-        this.user = response; // Assign the user to a class variable
-      },
-      (error) => {
-        console.log(error); // Handle the error
-      }
-    );
+    this.user= this.authService.getUser();
   }
 
   public logout() {
     this.authService.logout();
   }
 
+  public getName() {
+    this.user = this.authService.getUser();
+    return this.user.name;
+  }
+
   public isUserLogin() {
     return this.authService.IsUserConnect();
   }
 
+  public isAdmin() {
+    return this.authService.getUser().isAdmin;
+  }
 
 }
