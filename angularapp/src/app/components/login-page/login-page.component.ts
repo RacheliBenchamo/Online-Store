@@ -34,10 +34,12 @@ export class LoginPageComponent implements OnInit {
 
   onSubmit() {
     this.isSubmitted = true;
+
     if (this.loginForm.invalid) return;
-    console.log("login page");
+
     this.authService.login({ email: this.fc['email'].value, password: this.fc['password'].value }).subscribe(
       token => {
+        console.log(" token", token);
         this.authService.setTokenToLocal(token);
         this.router.navigateByUrl('');
       },
@@ -47,10 +49,6 @@ export class LoginPageComponent implements OnInit {
       }
     );
   }
-
-
-
-
 
 }
 

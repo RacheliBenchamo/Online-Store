@@ -8,7 +8,7 @@ const PROXY_CONFIG = [
   },
   {
     context: [
-      "/Auth",
+      "/users",
     ],
     target: "https://localhost:7020",
     secure: false

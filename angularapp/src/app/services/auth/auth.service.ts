@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { IUserLogin } from '../../models/interfaces/IUserLogin';
 import { User } from '../../models/User';
 
@@ -23,16 +23,29 @@ export class AuthService {
 
   public register(user: User): Observable<User> {
     return this.http.post<User>(
-      '/Auth/register',
+      '/Users/register',
       user
     );
   }
-
   public login(userLogin: IUserLogin): Observable<string> {
-    return this.http.post<string>('/Auth/login', userLogin).pipe(
+    return this.http.post<string>('/users/login', userLogin).pipe(
+      map((response: string) => {
+        return response; // Return the response as is
+      }),
       catchError((error: HttpErrorResponse) => {
         // Handle the error and save it in a class variable
         this.loginErrorMessage = error.error;
+        return throwError(error); // Rethrow the error to propagate it further
+      })
+    );
+  }
+
+  getUser(): Observable<User> {
+    return this.http.get<User>('/users').pipe(
+      map((response: User) => {
+        return response; // Return the response as a User object
+      }),
+      catchError((error: HttpErrorResponse) => {
         return throwError(error); // Rethrow the error to propagate it further
       })
     );
@@ -45,7 +58,7 @@ export class AuthService {
 
 
   public editUserDetails(user: User): Observable<User> {
-    return this.http.put<User>('/Auth/user', user);
+    return this.http.put<User>('/users/user', user);
   }
 
   public setTokenToLocal(token: string) {

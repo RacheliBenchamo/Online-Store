@@ -62,36 +62,30 @@ namespace webapi.Controllers
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(IUserLogin userLogin)
+        public async Task<ActionResult<object>> Login(IUserLogin userLogin)
         {
             try
             {
-                
-
-                //// Retrieve the user from the database.
+                // Retrieve the user from the database.
                 User userDb = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLogin.Email.ToLower());
 
-                //// Return a bad request response if the user doesn't exist or the password is incorrect.
+                // Return a bad request response if the user doesn't exist or the password is incorrect.
                 if (userDb == null || !VerifyPasswordHash(userLogin.Password, userDb.PasswordHash, userDb.PasswordSalt))
                     return BadRequest("Invalid login credentials");
 
-                // Generate a token and refresh token and return an OK response with the token.
+                // Generate a token and refresh token.
                 string token = CreateToken(userDb);
-
                 var refreshToken = GenerateRefreshToken();
-
                 SetRefreshToken(refreshToken);
-
                 userDb.RefreshToken = refreshToken.Token;
-
                 userDb.TokenCreated = refreshToken.Created;
-
                 userDb.TokenExpires = refreshToken.Expires;
 
                 //Save changes to the database
                 await _context.SaveChangesAsync();
 
-                return Ok(token);
+                // Return a JSON response with the token.
+                return new { token };
             }
             catch (Exception ex)
             {
@@ -100,7 +94,7 @@ namespace webapi.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<User>> GetUser()
         {
@@ -135,6 +129,8 @@ namespace webapi.Controllers
             }
 
         }
+
+
         [HttpPut("{userDto}")]
         [Authorize]
         public async Task<ActionResult<User>> UpdateUser(UserDto userDto)
