@@ -3,10 +3,10 @@
     <a href="#" routerLink="/" class="logo">{{shopName}}</a>
     <nav>
       <ul>
-        <li *ngIf="!isUserLogin()">
+        <li *ngIf="!user">
           <a href="#" routerLink="/login">Login</a>
         </li>
-        <li class="menu-container" *ngIf="isUserLogin()">
+        <li class="menu-container" *ngIf="user">
           <a href="#">{{getName()}}</a>
           <div class="menu">
             <a *ngIf="!isAdmin()" routerLink="/profile">Profile</a>

@@ -46,16 +46,16 @@ export class AuthService {
     );
   }
 
-  //public getUser(): Observable<User> {
-  //  return this.http.get<User>('/users').pipe(
-  //    map((user: User) => {
-  //      return user; 
-  //    }),
-  //    catchError((error: HttpErrorResponse) => {
-  //      return throwError(error); 
-  //    })
-  //  );
-  //}
+  public getUser2(): Observable<User> {
+    return this.http.get<User>('/users').pipe(
+      map((user: User) => {
+        return user; 
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(error); 
+      })
+    );
+  }
 
   public get loginErrMsg(): string {
 
@@ -73,7 +73,6 @@ export class AuthService {
 
   public IsUserConnect(): boolean {
     let authToken = localStorage.getItem('auth_token');
-
     // Check if the authToken is null or undefined
     if (!authToken) 
         return false;

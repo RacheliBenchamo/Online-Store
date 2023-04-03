@@ -12,6 +12,13 @@ const PROXY_CONFIG = [
     ],
     target: "https://localhost:7020",
     secure: false
+  },
+  {
+    context: [
+      "/cart",
+    ],
+    target: "https://localhost:7020",
+    secure: false
   }
 ]
 

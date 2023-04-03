@@ -10,5 +10,7 @@ namespace webapi.Data
         public DbSet<Product> Products => Set<Product>();
 
         public DbSet<User> Users => Set<User>();
+
+        public DbSet<CartItem> CartItems => Set<CartItem>();
     }
 }

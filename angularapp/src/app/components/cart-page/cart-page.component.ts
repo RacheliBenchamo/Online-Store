@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../services/cart/cart.service';
 import { Cart } from '../../models/Cart';
 import { CartItem } from '../../models/CartItem';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-cart-page',
@@ -10,9 +11,10 @@ import { CartItem } from '../../models/CartItem';
 })
 export class CartPageComponent implements OnInit {
 
-  cart!: Cart;
+  cart2!: Cart;
+  cart!: CartItem[];
 
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService, private authService: AuthService) {
     try {
       this.setCart();
     } catch (error) {
@@ -24,33 +26,48 @@ export class CartPageComponent implements OnInit {
   }
 
   public setCart() {
-    this.cart = this.cartService.getCart();
+    this.cartService.getCart(this.authService.getUser().email).subscribe((cart: CartItem[]) => {
+      this.cart = cart;
+    }, error => {
+      console.log('Error occurred during setCart: ', error);
+    });
   }
 
   public removeFromCart(cartItem: CartItem) {
     try {
-      this.cartService.removeFromCart(cartItem.product.name);
+      this.cartService.removeFromCart(this.authService.getUser().email,cartItem.productName);
       this.setCart();
     } catch (error) {
       console.log('Error occurred during remove from cart: ', error);
     }
   }
 
-  public changeQuantity(cartItem: CartItem, quantity: number) {
+  public changeQuantity(productName: string, quantity: number) {
     try {
-      this.cartService.changeQuantity(cartItem.product.name, quantity);
+      this.cartService.updateCartItemQuantity(this.authService.getUser().email,productName, quantity);
       this.setCart();
     } catch (error) {
       console.error("Error occurred during change quantity", error);
     }
   }
 
-  public clearCart(): void {
+  public buyCart(): void {
     try {
-      this.cartService.clearCart();
+      this.cartService.buyCart(this.authService.getUser().email);
       this.setCart();
     } catch (error) {
       console.error("Error occurred during clear cart", error);
     }
   }
+
+  public getTotalPrice():number {
+    let totalPrice = 0;
+    for (const cartItem of this.cart) {
+      totalPrice += cartItem.priceEach * cartItem.quantity;
+    }
+    return totalPrice;
+  }
+
+
+
 }

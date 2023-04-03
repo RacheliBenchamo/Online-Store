@@ -12,7 +12,7 @@ export class Cart {
   public get totalPrice(): number {
     let totalPrice = 0;
     try {
-      this.items.forEach(item => { totalPrice += item.price });
+      this.items.forEach(item => { totalPrice += item.priceEach });
     } catch (error) {
       console.error(`An error occurred while calculating the total price: ${error}`);
       throw error;

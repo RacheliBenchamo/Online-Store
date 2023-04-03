@@ -104,26 +104,28 @@ namespace webapi.Controllers
 
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<User>> GetUser()
         {
-            Debug.WriteLine("in GetUser 1");
             try
             {
-                Debug.WriteLine("in GetUser");
                 // Get the user's email from the token
-                var emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email);
-                var email = emailClaim.Value;
-
+                var email = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+                //Debug.WriteLine(HttpContext.User);
+                var claims = HttpContext.User.Claims;
+                foreach (var claim in claims)
+                {
+                    Debug.WriteLine($"{claim.Type}: {claim.Value}");
+                }
                 if (email == null)
                     return Unauthorized();
+
+                Debug.WriteLine("found token"+ email);
 
                 // Find the user in the database
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
                 if (user == null) 
                     return NotFound();
-
                 return Ok(user);
             }
             catch (Exception ex)
@@ -181,9 +183,7 @@ namespace webapi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
         }
-
 
 
         private RefreshToken GenerateRefreshToken()

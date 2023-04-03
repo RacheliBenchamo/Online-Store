@@ -1,27 +1,25 @@
 
-<app-not-found [visiable]="!cart || cart.items.length <= 0"
+<app-not-found [visiable]="!cart || cart.length <= 0"
                notFoundMessage="Cart Is Empty!"
                resetLinkText="Go To Home Page">
 </app-not-found>
 
-<div class="container" *ngIf="cart && cart.items.length > 0">
+<div class="container" *ngIf="cart && cart.length > 0">
   <ul>
-    <li *ngFor="let item of cart.items">
+    <li *ngFor="let item of cart">
+      
       <div>
-        <img [src]="item.product.imgUrl" [alt]="item.product.name">
-      </div>
-      <div>
-        <a routerLink="/product/{{item.product.name}}">
-          {{item.product.name}}
+        <a routerLink="/product/{{item.productName}}">
+          {{item.productName}}
         </a>
       </div>
       <div>
-        <select [(ngModel)]="item.quantity" (change)="changeQuantity(item, item.quantity)">
+        <select [(ngModel)]="item.quantity" (change)="changeQuantity(item.productName, item.quantity)">
           <option *ngFor="let i of [1, 2, 3, 4, 5]" [value]="i">{{i}}</option>
         </select>
       </div>
       <div>
-        {{item.product.price | currency}}
+        {{item.priceEach | currency}}
       </div>
       <div>
         <button class="remove-button" (click)="removeFromCart(item)">Remove</button>
@@ -31,9 +29,9 @@
 
   <div class="checkout">
     <div>
-      <div class="products-count">{{cart.items.length}}</div>
-      <div class="total-price">{{cart.totalPrice| currency}}</div>
-      <button class="buy-button" (click)="clearCart()">Buy</button>
+      <div class="products-count">{{cart.length}}</div>
+      <div class="total-price">{{getTotalPrice()| currency}}</div>
+      <button class="buy-button" (click)="buyCart()">Buy</button>
     </div>
   </div>
 </div>

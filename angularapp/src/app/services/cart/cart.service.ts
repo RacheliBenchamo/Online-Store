@@ -1,7 +1,8 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { Cart } from '../../models/Cart';
 import { CartItem } from '../../models/CartItem';
-import { Product } from '../../models/Product';
 
 @Injectable({
   providedIn: 'root'
@@ -10,74 +11,62 @@ export class CartService {
 
   private cart: Cart = new Cart();
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  /**
-   * Add a product to the cart. If the product is already in the cart, increase its quantity by one.
-   * @param product - The product to add to the cart.
-   */
-  public addToCart(product: Product): void {
-    try {
-      let cartItem = this.cart.items.find(item => item.product.name === product.name);
-      if (cartItem) {
-        this.changeQuantity(product.name, cartItem.quantity + 1);
-      } else {
-        this.cart.items.push(new CartItem(product));
-      }
-    } catch (error) {
-      console.error(`Error adding product to cart: ${error}`);
-    }
+
+  // add to cart
+  public addToCart(clientId: string, productName: string): Observable<void> {
+    return this.http.post<void>(`cart/${clientId}/products/${productName}`, null)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error.error); // Rethrow the error to propagate it further
+        })
+      );
   }
 
-  /**
-   * Remove a product from the cart.
-   * @param productId - The ID of the product to remove from the cart.
-   */
-  public removeFromCart(productName: string): void {
-    try {
-      this.cart.items = this.cart.items.filter(item => item.product.name !== productName);
-    } catch (error) {
-      console.error(`Error removing product from cart: ${error}`);
-    }
+  // remove from cart
+  public removeFromCart(clientId: string, productName: string): Observable<void> {
+    return this.http.post<void>(`cart/remove-from-cart`, { clientId, productName })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error.error); // Rethrow the error to propagate it further
+        })
+      );
   }
 
-  /**
-   * Change the quantity of a product in the cart.
-   * @param productId - The ID of the product to change the quantity of.
-   * @param quantity - The new quantity of the product.
-   */
-  public changeQuantity(productName: string, quantity: number): void {
-    try {
-      let cartItem = this.cart.items.find(item => item.product.name === productName);
-      if (cartItem) {
-        cartItem.quantity = quantity;
-      }
-    } catch (error) {
-      console.error(`Error changing quantity of product in cart: ${error}`);
-    }
+  // buy the cart
+  public buyCart(clientId: string): Observable<void> {
+    return this.http.delete<void>(`cart/${clientId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error.error); // Rethrow the error to propagate it further
+        })
+      );
   }
 
-  /**
-   * Get the current cart.
-   * @returns The current cart.
-   */
-  public getCart(): Cart {
-    try {
-      return this.cart;
-    } catch (error) {
-      console.error(`Error getting cart: ${error}`);
-      return new Cart();
-    }
+  // get client cart
+  public getCart(clientId: string): Observable<CartItem[]> {
+    return this.http.get<CartItem[]>(`cart/${clientId}`)
+      .pipe(
+        map((response: CartItem[]) => {
+          return response; // Return the response as an array of CartItem objects
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error.error); // Rethrow the error to propagate it further
+        })
+      );
   }
 
-  /**
-   * Clear the cart.
-   */
-  public clearCart(): void {
-    try {
-      this.cart.clearCart();
-    } catch (error) {
-      console.error(`Error clearing cart: ${error}`);
-    }
+  // update cart item quantity
+  public updateCartItemQuantity(clientId: string, productName: string, newQuantity: number): Observable<CartItem> {
+    return this.http.put<CartItem>(`cart/${clientId}/${productName}`, { newQuantity })
+      .pipe(
+        map((response: CartItem) => {
+          return response; // Return the response as a CartItem object
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(error.error); // Rethrow the error to propagate it further
+        })
+      );
   }
 }

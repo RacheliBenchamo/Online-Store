@@ -43,7 +43,7 @@ export class ProductPageComponent implements OnInit {
       if (!this.product) {
         throw new Error('Product is not available');
       }
-      this.cartService.addToCart(this.product);
+      this.cartService.addToCart(this.authService.getUser().email, this.product.name);
     } catch (error) {
       console.log('Error occurred during adding product to cart: ', error);
     }

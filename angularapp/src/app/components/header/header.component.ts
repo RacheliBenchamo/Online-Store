@@ -19,9 +19,13 @@ export class HeaderComponent implements OnInit {
      // this.cartQuantity = newCart.totalCount;
    // })
 
-    authService.userObservable.subscribe((newUser) => {
-      this.user = newUser;
-    })
+    //authService.userObservable.subscribe((newUser) => {
+    //  this.user = newUser;
+    //})
+
+    if (this.isTokenAvailable())
+      this.setUser();
+    
   }
 
   ngOnInit(): void {
@@ -32,12 +36,25 @@ export class HeaderComponent implements OnInit {
     this.authService.logout();
   }
 
+  setUser() {
+    this.authService.getUser2().subscribe(
+      (user: User) => {
+        this.user = user;
+      },
+      (error) => {
+        console.error('Error getting user:', error);
+      }
+    );
+  }
+
   public getName() {
+
+    //this.setUser();
     this.user = this.authService.getUser();
     return this.user.name;
   }
 
-  public isUserLogin() {
+  public isTokenAvailable() {
     return this.authService.IsUserConnect();
   }
 
