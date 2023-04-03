@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from '../../services/cart/cart.service';
-import { Cart } from '../../models/Cart';
-import { CartItem } from '../../models/CartItem';
-import { AuthService } from '../../services/auth/auth.service';
+import { CartService } from '../../../services/cart/cart.service';
+import { Cart } from '../../../models/Cart';
+import { CartItem } from '../../../models/CartItem';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-cart-page',

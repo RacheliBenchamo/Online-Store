@@ -6,19 +6,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
-import { HomeComponent } from './components/home/home.component';
-import { SearchComponent } from './components/search/search.component';
-import { ProductPageComponent } from './components/product-page/product-page.component';
-import { CartPageComponent } from './components/cart-page/cart-page.component';
-import { NotFoundComponent } from './components/not-found/not-found.component';
-import { FilterProductsComponent } from './components/filter-products/filter-products.component';
-import { ManageStoreComponent } from './components/manage-store/manage-store.component';
-import { LoginPageComponent } from './components/login-page/login-page.component';
-import { TitleComponent } from './components/title/title.component';
-import { RegisterPageComponent } from './components/register-page/register-page.component';
-import { EditProductComponent } from './components/edit-product/edit-product.component';
-import { AddProductPageComponent } from './components/add-product-page/add-product-page.component';
+import { HeaderComponent } from './components/partials/header/header.component';
+import { HomeComponent } from './components/pages/home/home.component';
+import { SearchComponent } from './components/partials/search/search.component';
+import { ProductPageComponent } from './components/pages/product-page/product-page.component';
+import { CartPageComponent } from './components/pages/cart-page/cart-page.component';
+import { NotFoundComponent } from './components/partials/not-found/not-found.component';
+import { FilterProductsComponent } from './components/partials/filter-products/filter-products.component';
+import { LoginPageComponent } from './components/pages/login-page/login-page.component';
+import { TitleComponent } from './components/partials/title/title.component';
+import { RegisterPageComponent } from './components/pages/register-page/register-page.component';
+import { EditProductComponent } from './components/pages/edit-product/edit-product.component';
+import { AddProductPageComponent } from './components/pages/add-product-page/add-product-page.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -41,7 +40,6 @@ const routes: Routes = [
     CartPageComponent,
     NotFoundComponent,
     FilterProductsComponent,
-    ManageStoreComponent,
     LoginPageComponent,
     TitleComponent,
     RegisterPageComponent,

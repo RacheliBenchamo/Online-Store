@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProductService } from '../../services/product/product.service';
-import { Product } from '../../models/Product';
+import { ProductService } from '../../../services/product/product.service';
+import { Product } from '../../../models/Product';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 

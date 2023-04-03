@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../models/User';
-import { AuthService } from '../../services/auth/auth.service';
-import { CartService } from '../../services/cart/cart.service';
+import { User } from '../../../models/User';
+import { AuthService } from '../../../services/auth/auth.service';
+import { CartService } from '../../../services/cart/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -19,9 +19,9 @@ export class HeaderComponent implements OnInit {
      // this.cartQuantity = newCart.totalCount;
    // })
 
-    //authService.userObservable.subscribe((newUser) => {
-    //  this.user = newUser;
-    //})
+    authService.userObservable.subscribe((newUser) => {
+      this.user = newUser;
+    })
 
     if (this.isTokenAvailable())
       this.setUser();
@@ -34,6 +34,7 @@ export class HeaderComponent implements OnInit {
 
   public logout() {
     this.authService.logout();
+    this.user = new User;
   }
 
   setUser() {
@@ -48,10 +49,10 @@ export class HeaderComponent implements OnInit {
   }
 
   public getName() {
-
     //this.setUser();
     this.user = this.authService.getUser();
-    return this.user.name;
+    console.log("name --- ", this.user.name)
+    return this.user.name != '' ?this.user.name : "Guest";
   }
 
   public isTokenAvailable() {
