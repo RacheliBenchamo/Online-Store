@@ -21,7 +21,7 @@ namespace webapi.Controllers
         public static User user = new User();
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private const bool IS_ADMIN = false;
 
         public UsersController(IConfiguration configuration, DataContext context,
             IHttpContextAccessor httpContextAccessor)
@@ -49,7 +49,7 @@ namespace webapi.Controllers
                 CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                 user.Name = userDto.Name;
-                user.IsAdmin = false;
+                user.IsAdmin = IS_ADMIN;
                 user.Email = userDto.Email.ToLower();
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
