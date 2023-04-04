@@ -27,6 +27,8 @@ To get started with the project, follow these steps:
 Clone the repository to your local machine
 Install the necessary dependencies for both the frontend and backend
 Create a SQL Server database and update the connection string in the backend's appsettings.json file
+Before running the application, make sure to execute the SQL script under the server project in 
+SqlServerScripts directory in the SQL Server in order to create the required tables.
 Build and run the project
 Once the project is up and running, customers and admins can register and login to their accounts.
 Customers can browse products and add them to their cart, while admins can view and manage the store's inventory.
