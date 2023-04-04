@@ -30,4 +30,7 @@ Create a SQL Server database and update the connection string in the backend's a
 Build and run the project
 Once the project is up and running, customers and admins can register and login to their accounts.
 Customers can browse products and add them to their cart, while admins can view and manage the store's inventory.
-The admin acount is registered in the email- admin@gmail.com and password-1234.
+To register someone as an admin, you need to change the value of the IS_ADMIN constant in the UserController class in the C# backend code.
+
+By default, the value of IS_ADMIN is set to false, which means that newly registered users will not have admin privileges.
+To change this, you can set the value of IS_ADMIN to true, which will allow newly registered users to have admin privileges.
