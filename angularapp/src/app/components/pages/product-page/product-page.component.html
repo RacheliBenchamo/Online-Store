@@ -25,7 +25,14 @@
         {{product.stock}}
       </span>
     </div>
-    <button *ngIf="!isAdmin()" (click)="addToCart()">Add To Cart</button>
+    <button *ngIf="!isAdmin() && product.stock > 0" (click)="addToCart()">
+         Add To Cart
+    </button>
+    <div *ngIf="!isAdmin() && product.stock <= 0" class="out-of-stock">
+      <span>
+        This Product is currently out of Stock!
+      </span>
+    </div>
     <div *ngIf="isAdmin()">
       <a routerLink="/editProduct/{{product.name}}">Edit Product</a>
       <button (click)="deleteProduct()">Delete Product</button>

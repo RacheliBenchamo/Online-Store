@@ -11,7 +11,6 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\angularapp</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="environment\" />
     <Folder Include="src\validators\" />
   </ItemGroup>
 </Project>

@@ -15,7 +15,6 @@ export class RegisterPageComponent implements OnInit {
   isSubmitted = false;
   message: string = '';
 
-  returnUrl = '';
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -24,42 +23,47 @@ export class RegisterPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Initialize the registerForm
     this.registerForm = this.formBuilder.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-    }, {
-      
     });
   }
 
+  /**
+   * Getter function that returns the form controls
+   */
   get fc() {
     return this.registerForm.controls;
   }
 
-  onSubmit() {
 
+  /**
+  * This function runs when the register form is submitted
+  */
+  onSubmit() {
     this.isSubmitted = true;
+
     if (this.registerForm.invalid) return;
 
-    // Perform client-side validation here, if needed
-
-    this.authService.register
-      ({
+    try {
+      // Call the register function of the authService and subscribe to the response
+      this.authService.register({
         email: this.fc['email'].value,
         password: this.fc['password'].value,
         name: this.fc['name'].value,
         isAdmin: false,
-      })
-      .subscribe(
-      (response: User) => {
-        this.message='Registration successful, you can now Login!';
-      },
-      (error) => {
-        this.message = 'Registration failed - '+ error;
-      }
-    );
+      }).subscribe(
+        (response: User) => {
+          this.message = 'Registration successful, you can now Login!';
+        },
+        (error) => {
+          this.message = 'Registration failed - ' + error;
+        }
+      );
+    } catch (error) {
+      console.log('Error occurred during registration:', error);
+    }
   }
-
-
 }

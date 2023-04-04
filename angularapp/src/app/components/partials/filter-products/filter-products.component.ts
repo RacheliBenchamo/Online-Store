@@ -22,7 +22,9 @@ export class FilterProductsComponent implements OnInit {
     }
   }
 
-  // emit the selected sorting option to parent component
+  /**
+   * emit the selected sorting option to parent component
+   */
   sortProducts() {
     try {
       this.sortOption.emit(this.selectedOption);

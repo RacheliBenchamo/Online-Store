@@ -7,7 +7,7 @@
           <a href="#" routerLink="/login">Login</a>
         </li>
         <li class="menu-container" *ngIf="isTokenAvailable()">
-          <a href="#">{{getName()}}</a>
+          <a>{{getName()}}</a>
           <div class="menu">
             <a *ngIf="!isAdmin()" routerLink="/profile">Profile</a>
             <a *ngIf="!isAdmin()" routerLink="/orders">Orders</a>
@@ -15,8 +15,8 @@
           </div>
         </li>
         <li *ngIf="!isAdmin()">
-          <a href="#" routerLink="/cart-page">
-            Cart <span> 3 </span>
+          <a routerLink="/cart-page">
+            Cart <span> {{cartQuantity}} </span>
           </a>
         </li>
         <li *ngIf="isAdmin()">

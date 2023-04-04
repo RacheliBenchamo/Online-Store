@@ -31,6 +31,11 @@ namespace webapi.Controllers
             this._httpContextAccessor = httpContextAccessor;
         }
 
+        /**
+        * Registers a new user with the provided user data.
+        * @param userDto The user data to be used for registration.
+        * @return Returns the newly created user.
+        */
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto userDto)
         {
@@ -61,7 +66,12 @@ namespace webapi.Controllers
 
         }
 
-
+        /**
+        * Logs a user in and generates a JWT token for authentication.
+        * @param {IUserLogin} userLogin - An object containing the user's email and password.
+        * @returns {object} - Returns a JSON object containing a JWT token and user information.
+        * @throws {Exception} - Throws an exception if there is an error while logging in.
+        */
         [HttpPost("login")]
         public async Task<ActionResult<object>> Login(IUserLogin userLogin)
         {
@@ -102,7 +112,13 @@ namespace webapi.Controllers
             }
         }
 
-
+        /**
+        * Retrieves the current user based on the JWT token passed in the header.
+        * @return {Task<ActionResult<User>>} Returns an HTTP response with
+        * the current user object if successful.
+        * @throws {Exception} Throws an exception if there is an error while
+        * processing the request.
+        */
         [HttpGet]
         public async Task<ActionResult<User>> GetUser()
         {
@@ -135,7 +151,16 @@ namespace webapi.Controllers
         }
 
 
-
+        /**
+         * (Not in use for now)
+        * Updates the user's properties with the given UserDto object.
+        * The user must be authorized and authenticated to make the request.
+        * @param UserDto userDto The user object containing the updated properties.
+        * @return ActionResult<User> Returns an Ok ActionResult with the updated user object if successful.
+        * Returns a NotFound ActionResult if the user is not found in the database.
+        * Returns a BadRequest ActionResult if the userDto parameter is null.
+        * Returns an Unauthorized ActionResult if the user is not authorized or authenticated.
+        */
         [HttpPut("{userDto}")]
         [Authorize]
         public async Task<ActionResult<User>> UpdateUser(UserDto userDto)
@@ -185,7 +210,10 @@ namespace webapi.Controllers
             }
         }
 
-
+        /**
+        * Generates a new refresh token.
+        * @returns {RefreshToken} The generated refresh token.
+        */
         private RefreshToken GenerateRefreshToken()
         {
             var refreshToken = new RefreshToken
@@ -198,6 +226,10 @@ namespace webapi.Controllers
             return refreshToken;
         }
 
+        /**
+        * Sets the refresh token in a cookie and updates the user's token information.
+        * @param newRefreshToken The new refresh token to be set.
+        */
         private void SetRefreshToken(RefreshToken newRefreshToken)
         {
             var cookieOptions = new CookieOptions
@@ -212,6 +244,11 @@ namespace webapi.Controllers
             user.TokenExpires = newRefreshToken.Expires;
         }
 
+        /**
+        * Creates a JWT token for the specified user.
+        * @param user The user to create the token for.
+        * @return The JWT token string.
+        */
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>
@@ -231,6 +268,12 @@ namespace webapi.Controllers
             return jwt;
         }
 
+        /**
+        * Computes the password hash and salt using HMACSHA512. 
+        * @param password The password to hash.
+        * @param passwordHash The computed password hash.
+        * @param passwordSalt The computed password salt.
+        */
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
@@ -240,6 +283,14 @@ namespace webapi.Controllers
             }
         }
 
+        /**
+        * Verifies the provided password by computing the hash using the provided salt
+        * and comparing it to the provided hash. 
+        * @param password The password to verify
+        * @param passwordHash The hash of the password to compare against
+        * @param passwordSalt The salt used to compute the hash of the password 
+        * @returns true if the provided password is verified, false otherwise
+        */
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
@@ -250,6 +301,11 @@ namespace webapi.Controllers
             }
         }
 
+        /**
+        * Checks if a user with the given email exists in the database. 
+        * @param email The email address to check. 
+        * @return A boolean indicating whether a user with the given email exists in the database.
+        */
         private async Task<bool> UserExists(string email)
         {
             return await _context.Users.AnyAsync(x => x.Email == email.ToLower());

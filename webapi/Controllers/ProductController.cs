@@ -16,13 +16,22 @@ namespace webapi.Controllers
             this._context = context;
         }
 
-        // GET all products
+        /**
+        * Get all products in the database.
+        * @return {Task<ActionResult<List<Product>>>} List of all products in the database.
+        */
         [HttpGet(Name = "GetAllProducts")]
         public async Task<ActionResult<List<Product>>> GetAllProducts()
         {
             return Ok(await _context.Products.ToListAsync());
         }
 
+        /**
+        * Retrieve a product from the database by its name.
+        * @param name The name of the product to retrieve.
+        * @return If the product is found, returns an HTTP 200 OK status code and the requested product.
+        * If the product is not found, returns an HTTP 404 Not Found status code.
+        */
         [HttpGet("{name}", Name = "GetProductByName")]
         public async Task<ActionResult<Product>> GetProductByName(string name)
         {
@@ -33,7 +42,11 @@ namespace webapi.Controllers
             return Ok(product);
         }
 
-        // GET products by search term
+        /**
+        * Returns a list of products whose names contain the given search term.
+        * @param searchTerm The search term to use when filtering products.
+        * @return An ActionResult containing a list of products whose names contain the given search term.
+        */
         [HttpGet("search/{searchTerm}", Name = "GetProductsBySearchTerm")]
         public async Task<ActionResult<List<Product>>> GetBySearchTerm(string searchTerm)
         {
@@ -43,7 +56,11 @@ namespace webapi.Controllers
             return Ok(await products.ToListAsync());
         }
 
-
+        /**
+        * Returns a list of products sorted based on the specified parameter.
+        * @param sort The sorting parameter. Can be one of "nameAsc", "nameDesc", "priceAsc", or "priceDesc".
+        * @return A list of products sorted based on the specified parameter.
+        */
         [HttpGet("sorted/{sort}", Name = "GetSortedProducts")]
         public async Task<ActionResult<List<Product>>> GetSortedProducts(string sort)
         {
@@ -72,7 +89,11 @@ namespace webapi.Controllers
         }
 
 
-
+        /**
+        * Create a new product
+        * @param product - A ProductDto object that represents the new product to be created.
+        * @return Returns an ActionResult with a List of all products including the newly created product.
+        */
         [HttpPost(Name = "CreateNewProduct")]
         public async Task<ActionResult<List<Product>>> AddNewProduct(ProductDto product)
         {
@@ -90,6 +111,12 @@ namespace webapi.Controllers
             return Ok(await _context.Products.ToListAsync());
         }
 
+        /**
+        * Update a product by name.
+        * @param name The name of the product to update.
+        * @param product An object containing the updated product information.
+        * @return The list of all products after the update has been made.
+        */
         [HttpPut("{name}")]
         public async Task<ActionResult<List<Product>>> UpdateProduct(string name, Product product)
         {
@@ -108,7 +135,11 @@ namespace webapi.Controllers
             return Ok(await _context.Products.ToListAsync());
         }
 
-
+        /**
+        * Deletes a specific product by name
+        * @param name {string} The name of the product to delete
+        * @returns {ActionResult<List<Product>>} A list of all remaining products after deletion
+        */
         [HttpDelete("{name}")]
         public async Task<ActionResult<List<Product>>> DeleteProduct(string name)
         {

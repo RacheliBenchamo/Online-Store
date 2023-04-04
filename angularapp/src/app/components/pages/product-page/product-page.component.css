@@ -111,3 +111,15 @@ img {
     margin-top: 0;
     margin-right: 0;
   }
+
+.out-of-stock {
+  font-size: 1.6rem;
+  color: red;
+  margin: 2rem 2rem 2rem 0;
+  align-self: flex-start;
+}
+
+  .out-of-stock::before {
+    content: "Status : ";
+    color: darkgrey;
+  }

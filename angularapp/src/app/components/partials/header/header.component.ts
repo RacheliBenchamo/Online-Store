@@ -14,45 +14,68 @@ export class HeaderComponent implements OnInit {
   cartQuantity = 0;
   user!: User;
 
-  constructor(cartService: CartService, private authService: AuthService) {
-    //cartService.getCartObservable().subscribe((newCart) => {
-     // this.cartQuantity = newCart.totalCount;
-   // })
-
+  constructor(
+    private cartService: CartService,
+    private authService: AuthService
+  ) {
+    // Subscribe to user changes in the auth service
     authService.userObservable.subscribe((newUser) => {
       this.user = newUser;
-    })
+    });
 
-    if (this.isTokenAvailable())
-      this.setUser();
-    
+    try {
+      // If a token is available, set the user
+      if (this.isTokenAvailable()) {
+        this.setUser();
+      }
+
+      // Subscribe to cart changes in the cart service
+      this.cartService.cartObservable.subscribe((cartItems) => {
+        this.cartQuantity = cartItems.length;
+      });
+    } catch (error) {
+      console.log('Error occurred during initialization: ', error);
+    }
   }
 
   ngOnInit(): void {
-    this.user= this.authService.getUser();
+    this.user = this.authService.getUser();
   }
 
+  /**
+   * Logout the user and reset user variable
+   */
   public logout() {
-    this.authService.logout();
-    this.user = new User;
+    try {
+      this.authService.logout();
+      this.user = new User;
+    } catch (error) {
+      console.log('Error occurred during logout: ', error);
+    }
   }
 
+  /**
+   * Set the user from the auth service
+   */
   setUser() {
-    this.authService.getUser2().subscribe(
-      (user: User) => {
-        this.user = user;
-      },
-      (error) => {
-        console.error('Error getting user:', error);
-      }
-    );
+    try {
+      this.authService.getUser2().subscribe(
+        (user: User) => {
+          this.user = user;
+        },
+        (error) => {
+          console.error('Error getting user:', error);
+        }
+      );
+    } catch (error) {
+      console.log('Error occurred during setting user: ', error);
+    }
   }
+
 
   public getName() {
-    //this.setUser();
     this.user = this.authService.getUser();
-    console.log("name --- ", this.user.name)
-    return this.user.name != '' ?this.user.name : "Guest";
+    return this.user.name != '' ? this.user.name : "Guest";
   }
 
   public isTokenAvailable() {
@@ -61,6 +84,10 @@ export class HeaderComponent implements OnInit {
 
   public isAdmin() {
     return this.authService.getUser().isAdmin;
+  }
+
+  public setCartQuantity(quan: number) {
+    this.cartQuantity = quan;
   }
 
 }

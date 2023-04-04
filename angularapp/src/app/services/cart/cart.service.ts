@@ -1,7 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
-import { Cart } from '../../models/Cart';
+import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
 import { CartItem } from '../../models/CartItem';
 
 @Injectable({
@@ -9,64 +8,97 @@ import { CartItem } from '../../models/CartItem';
 })
 export class CartService {
 
-  private cart: Cart = new Cart();
+  private cartSubject = new BehaviorSubject<CartItem[]>([]);
+  public cartObservable: Observable<CartItem[]>;
 
-  constructor(private http: HttpClient) { }
-
-
-  // add to cart
-  public addToCart(clientId: string, productName: string): Observable<void> {
-    return this.http.post<void>(`cart/${clientId}/products/${productName}`, null)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          return throwError(error.error); // Rethrow the error to propagate it further
-        })
-      );
+  constructor(private http: HttpClient) {
+    this.cartObservable = this.cartSubject.asObservable();
   }
 
-  // remove from cart
-  public removeFromCart(clientId: string, productName: string): Observable<void> {
-    return this.http.post<void>(`cart/remove-from-cart`, { clientId, productName })
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          return throwError(error.error); // Rethrow the error to propagate it further
-        })
-      );
+  /**
+   * Add an item to cart
+   * @param clientEmail
+   * @param productName
+   * @returns Observable<void>
+   */
+  public addToCart(clientEmail: string, productName: string): Observable<void> {
+    return this.http.post<void>(`cart/addToCart/email/${clientEmail}/productName/${productName}`, null).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // Rethrow the error to propagate it further
+        return throwError(error);
+      })
+    );
   }
 
-  // buy the cart
-  public buyCart(clientId: string): Observable<void> {
-    return this.http.delete<void>(`cart/${clientId}`)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          return throwError(error.error); // Rethrow the error to propagate it further
-        })
-      );
+
+  /**
+   * Remove an item from cart
+   * @param clientEmail
+   * @param productName
+   * @returns Observable<void>
+   */
+  public removeFromCart(clientEmail: string, productName: string): Observable<void> {
+    return this.http.post<void>(`cart/removeFromCart/email/${clientEmail}/productName/${productName}`, null).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // Rethrow the error to propagate it further
+        return throwError(error);
+      })
+    );
   }
 
-  // get client cart
-  public getCart(clientId: string): Observable<CartItem[]> {
-    return this.http.get<CartItem[]>(`cart/${clientId}`)
-      .pipe(
-        map((response: CartItem[]) => {
-          return response; // Return the response as an array of CartItem objects
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return throwError(error.error); // Rethrow the error to propagate it further
-        })
-      );
+
+  /**
+   * Buy the cart
+   * @param clientEmail
+   * @returns Observable<void> 
+   */
+  public buyCart(clientEmail: string): Observable<void> {
+    return this.http.delete<void>(`cart/buy/email/${clientEmail}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // Rethrow the error to propagate it further
+        return throwError(error);
+      })
+    );
   }
 
-  // update cart item quantity
-  public updateCartItemQuantity(clientId: string, productName: string, newQuantity: number): Observable<CartItem> {
-    return this.http.put<CartItem>(`cart/${clientId}/${productName}`, { newQuantity })
-      .pipe(
-        map((response: CartItem) => {
-          return response; // Return the response as a CartItem object
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return throwError(error.error); // Rethrow the error to propagate it further
-        })
-      );
+
+  /**
+   * Get client cart
+   * @param clientEmail
+   * @returns Observable<CartItem[]>
+   */
+  public getCart(clientEmail: string): Observable<CartItem[]> {
+    return this.http.get<CartItem[]>(`cart/getCart/email/${clientEmail}`).pipe(
+      map((response: CartItem[]) => {
+        return response; // Return the response as an array of CartItem objects
+      }),
+      catchError((error: HttpErrorResponse) => {
+        // Rethrow the error to propagate it further
+        return throwError(error);
+      })
+    );
   }
+
+
+  /**
+   * Update cart item quantity
+   * @param clientEmail
+   * @param productName
+   * @param newQuantity
+   * @returns Observable<CartItem> 
+   */
+  public updateCartItemQuantity(clientEmail: string, productName: string, newQuantity: number)
+    : Observable<CartItem> {
+    return this.http.put<CartItem>
+      (`cart/email/${clientEmail}/prodName/${productName}/prodQuan/${newQuantity}`, null).pipe(
+      map((response: CartItem) => {
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        // Rethrow the error to propagate it further
+        return throwError(error);
+      })
+    );
+  }
+
 }

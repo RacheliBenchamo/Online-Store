@@ -1,8 +1,12 @@
 
-<app-not-found [visiable]="!cart || cart.length <= 0"
+<app-not-found [visiable]="(!cart || cart.length <= 0) && !purchased "
                notFoundMessage="Cart Is Empty!"
                resetLinkText="Go To Home Page">
 </app-not-found>
+
+<div class="message" *ngIf="purchased">
+  Thank you for buying!
+</div>
 
 <div class="container" *ngIf="cart && cart.length > 0">
   <ul>
