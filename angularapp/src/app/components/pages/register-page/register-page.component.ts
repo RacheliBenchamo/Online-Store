@@ -59,7 +59,7 @@ export class RegisterPageComponent implements OnInit {
           this.message = 'Registration successful, you can now Login!';
         },
         (error) => {
-          this.message = 'Registration failed - ' + error;
+          this.message = 'Email already taken, registration failed. Please try again with a different email.';
         }
       );
     } catch (error) {
